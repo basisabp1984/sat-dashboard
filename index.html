@@ -27,17 +27,18 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .leaflet-popup-content{margin:0!important;min-width:255px!important}
 .leaflet-popup-tip-container{display:none}
 .leaflet-popup-close-button{color:rgba(255,255,255,0.8)!important;top:9px!important;right:11px!important;font-size:17px!important;z-index:10}
-.truck-tip,.cargo-tip{background:#003DA5!important;color:#fff!important;border:1px solid #F5A623!important;border-radius:7px!important;font-size:11px!important;padding:6px 9px!important;box-shadow:0 4px 14px rgba(0,0,0,0.4)!important;font-family:-apple-system,sans-serif!important;line-height:1.45;white-space:normal!important}
-.truck-tip::before,.cargo-tip::before{border-top-color:#F5A623!important}
-.truck-tip b,.cargo-tip b{color:#FFD700;font-size:12px}
-.truck-tip .tt-st,.cargo-tip .tt-st{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;margin-left:4px}
+.map-tip{background:#003DA5!important;color:#fff!important;border:1px solid #F5A623!important;border-radius:7px!important;font-size:11px!important;padding:6px 9px!important;box-shadow:0 4px 14px rgba(0,0,0,0.4)!important;font-family:-apple-system,sans-serif!important;line-height:1.4}
+.map-tip::before{border-top-color:#F5A623!important}
+.map-tip b{color:#FFD700;font-size:12px}
+.map-tip .tt-st{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;margin-left:4px}
+.map-tip .tt-pr{color:#F5A623;font-weight:700}
+.map-tip .tt-mut{color:rgba(255,255,255,0.6)}
 .cg-new{animation:ping 0.7s infinite}
 @keyframes ping{0%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(255,255,255,0.9))}70%{transform:scale(1.5);filter:drop-shadow(0 0 8px rgba(255,255,255,0.8))}100%{transform:scale(1)}}
 @keyframes yw{0%,100%{filter:drop-shadow(0 0 3px rgba(245,166,35,0.8))}50%{filter:drop-shadow(0 0 10px rgba(245,166,35,1))}}
 @keyframes rw{0%,100%{filter:drop-shadow(0 0 3px rgba(239,68,68,0.8))}50%{filter:drop-shadow(0 0 12px rgba(239,68,68,1))}}
 @keyframes neon{0%,100%{filter:drop-shadow(0 0 4px #39FF14)}50%{filter:drop-shadow(0 0 14px #39FF14)}}
-@keyframes pulse-near{0%,100%{filter:drop-shadow(0 0 4px rgba(57,255,20,0.5))}50%{filter:drop-shadow(0 0 12px rgba(57,255,20,0.95))}}
-.cg-near{animation:pulse-near 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:0.55}50%{opacity:1}}
 #panel{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.4);z-index:500;max-height:85%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1)}
 #panel.open{transform:translateY(0)}
 .phdr{padding:12px 14px;display:flex;align-items:flex-start;justify-content:space-between}
@@ -46,13 +47,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .pclose{background:rgba(255,255,255,0.22);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;line-height:26px;text-align:center}
 .pbody{padding:10px 14px}
 .psec{padding:8px 14px;border-top:1px solid #f3f4f6}
-.psec-h{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#003DA5;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.psec-h::before{content:'';width:11px;height:2px;background:#F5A623;border-radius:1px}
+.psec-t{font-size:9px;font-weight:800;letter-spacing:0.7px;text-transform:uppercase;color:#003DA5;margin-bottom:5px}
 .prow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:12px;gap:8px}
 .prow:last-child{border:none}
 .plbl{color:#6b7280;flex-shrink:0}.pval{font-weight:600;color:#111;text-align:right}
-.pchip{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;margin-right:3px}
-.pchip.g{background:#DCFCE7;color:#15803D}.pchip.y{background:#FEF3C7;color:#A16207}.pchip.r{background:#FEE2E2;color:#B91C1C}.pchip.b{background:#DBEAFE;color:#1D4ED8}
 .pbar{padding:7px 14px 8px}
 .pbg{height:6px;background:#e5e7eb;border-radius:3px}
 .pbf{height:100%;border-radius:3px}
@@ -61,14 +59,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .palert{padding:8px 14px;background:#FFF7ED;border-top:1px solid #FED7AA}
 .pat{font-size:11px;font-weight:700;color:#C2410C;margin-bottom:2px}
 .pab{font-size:11px;color:#9A3412}
+.pgood{padding:8px 14px;background:#F0FDF4;border-top:1px solid #BBF7D0;font-size:11px;color:#166534;line-height:1.5}
+.pgood b{color:#14532D}
 .pmsg{padding:6px 14px;background:#F9FAFB;border-top:1px solid #f3f4f6;font-size:10px;color:#6b7280;font-style:italic}
+.pchip{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-right:4px;margin-bottom:3px}
 .pcall{display:block;padding:11px;background:#003DA5;color:#fff;text-align:center;font-size:12px;font-weight:700;text-decoration:none}
 .pcall:hover{background:#002880}
-.pnear-item{padding:6px 0;border-bottom:1px dashed #e5e7eb;font-size:11px;display:flex;justify-content:space-between;gap:6px}
-.pnear-item:last-child{border:none}
-.pnear-l{color:#374151}.pnear-r{color:#003DA5;font-weight:700;text-align:right;flex-shrink:0}
-.prisk{padding:7px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:7px;margin-top:6px;font-size:11px;color:#92400E;line-height:1.5}
-.prisk b{color:#78350F}
 #uberwrap{position:fixed;bottom:20px;right:10px;z-index:600;display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:min(290px,85vw);pointer-events:none}
 .ucard{width:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,0.55);pointer-events:all;animation:sUp 0.45s cubic-bezier(0.34,1.56,0.64,1)}
 .ucard.out{animation:sDn 0.28s ease forwards}
@@ -100,36 +96,18 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .lr{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:10px;color:rgba(255,255,255,0.65)}
 .lr:last-child{margin:0}
 .lsep{height:1px;background:rgba(245,166,35,0.3);margin:5px 0}
+#routingBadge{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:401;background:rgba(0,61,165,0.93);border:1px solid rgba(245,166,35,0.5);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;color:#fff;display:none;animation:pulse 1.4s infinite}
 #archpage{position:fixed;inset:0;background:#060B1A;z-index:2000;overflow-y:auto;display:none}
 .anav{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #F5A623;position:sticky;top:0;background:#003DA5;z-index:10}
 .alogo{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
 .alogo-s{width:30px;height:30px;background:#F5A623;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#003DA5}
 .aback{background:#F5A623;color:#003DA5;border:none;padding:6px 13px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:700}
-.ahero{text-align:center;padding:32px 16px 18px}
+.ahero{text-align:center;padding:32px 16px 14px}
 .ahero h1{font-size:clamp(20px,5vw,36px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px}
 .ahspan{color:#F5A623}
-.ahero p{color:rgba(255,255,255,0.45);font-size:13px;line-height:1.6;max-width:560px;margin:0 auto}
-.acards{max-width:780px;margin:0 auto;padding:0 14px 36px;display:flex;flex-direction:column;gap:14px}
-.ac{border-radius:13px;overflow:hidden}
-.ach{padding:14px 16px;display:flex;align-items:center;gap:12px}
-.acn{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
-.actag{font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px}
-.actit{font-size:16px;font-weight:800;color:#fff}
-.acb{padding:13px 16px}
-.acpr{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;margin-bottom:11px;padding:9px 12px;background:rgba(255,255,255,0.04);border-radius:7px;border-left:3px solid rgba(245,166,35,0.4)}
-.acpr b{color:#F5A623;font-weight:700}
-.acll{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:rgba(255,255,255,0.35);margin:11px 0 7px}
-.aci{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px;font-size:12px;color:rgba(255,255,255,0.72);line-height:1.5}
-.acd{width:5px;height:5px;border-radius:50%;margin-top:6px;flex-shrink:0;background:#F5A623}
-.aci b{color:#fff}
-.ac-funcs{margin-top:9px;padding:8px 11px;background:rgba(245,166,35,0.07);border:1px dashed rgba(245,166,35,0.25);border-radius:7px}
-.ac-funcs-h{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#F5A623;margin-bottom:5px}
-.ac-funcs-list{display:flex;flex-wrap:wrap;gap:4px}
-.ac-funcs-chip{font-size:10px;padding:2px 7px;background:rgba(245,166,35,0.15);color:#F5A623;border-radius:11px;font-weight:600}
-.acres{margin-top:11px;padding:9px 13px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(245,166,35,0.12);color:#F5A623;line-height:1.5}
-.acmet{margin-top:7px;text-align:center;font-size:10px;font-weight:700;padding:5px;border-radius:6px;background:rgba(0,61,165,0.2);color:#7EC8FF}
-.asis{max-width:920px;margin:0 auto;padding:14px 14px 30px}
-.asis-h{text-align:center;margin-bottom:18px}
+.ahero p{color:rgba(255,255,255,0.45);font-size:13px;line-height:1.6;max-width:620px;margin:0 auto}
+.asis{max-width:920px;margin:0 auto;padding:14px 14px 24px}
+.asis-h{text-align:center;margin-bottom:14px}
 .asis-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#F5A623;background:rgba(245,166,35,0.12);padding:4px 10px;border-radius:20px;margin-bottom:8px}
 .asis-h h2{font-size:clamp(18px,3.5vw,26px);font-weight:800;color:#fff;line-height:1.25}
 .asis-h p{color:rgba(255,255,255,0.45);font-size:12px;line-height:1.5;margin-top:6px;max-width:560px;margin-left:auto;margin-right:auto}
@@ -145,7 +123,33 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .asis-c-t{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
 .asis-c-d{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.45;margin-bottom:6px}
 .asis-c-q{font-size:11px;color:#F5A623;font-style:italic;line-height:1.4;border-left:2px solid rgba(245,166,35,0.4);padding-left:7px}
-.aftr{text-align:center;padding:20px 16px 40px;border-top:1px solid rgba(245,166,35,0.2);color:rgba(255,255,255,0.35);font-size:12px;max-width:680px;margin:0 auto}
+.tobe{max-width:920px;margin:14px auto 0;padding:0 14px}
+.tobe-sep{display:flex;align-items:center;gap:14px;margin:18px 0 14px}
+.tobe-sep .line{flex:1;height:1px;background:rgba(245,166,35,0.25)}
+.tobe-sep .tag{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#F5A623;background:rgba(245,166,35,0.1);padding:5px 13px;border-radius:20px}
+.tobe-intro{text-align:center;margin-bottom:18px}
+.tobe-intro h2{font-size:clamp(18px,3.5vw,26px);font-weight:800;color:#fff;line-height:1.25;margin-bottom:6px}
+.tobe-intro p{color:rgba(255,255,255,0.45);font-size:12px;line-height:1.55;max-width:560px;margin:0 auto}
+.acards{display:flex;flex-direction:column;gap:14px;padding-bottom:24px}
+.ac{border-radius:13px;overflow:hidden}
+.ach{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.acn{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
+.actag{font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px}
+.actit{font-size:16px;font-weight:800;color:#fff}
+.acb{padding:13px 16px}
+.acpr{font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:12px;padding:10px 13px;background:rgba(255,255,255,0.04);border-radius:7px;border-left:3px solid rgba(245,166,35,0.4)}
+.acpr b{color:#FF6B6B}
+.acll{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:rgba(255,255,255,0.3);margin:14px 0 8px}
+.aci{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:12px;color:rgba(255,255,255,0.72);line-height:1.5}
+.aci b{color:#fff}
+.acd{width:5px;height:5px;border-radius:50%;margin-top:6px;flex-shrink:0;background:#F5A623}
+.accov{margin-top:10px;padding:9px 12px;border-radius:8px;background:rgba(126,200,255,0.08);border:1px solid rgba(126,200,255,0.2);font-size:11px;color:rgba(255,255,255,0.7);line-height:1.5}
+.accov b{color:#7EC8FF;font-weight:700}
+.accov-fns{margin-top:5px;display:flex;flex-wrap:wrap;gap:5px}
+.accov-fn{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(245,166,35,0.15);color:#F5A623}
+.acres{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(245,166,35,0.12);color:#F5A623;line-height:1.5}
+.acmet{margin-top:7px;text-align:center;font-size:10px;font-weight:700;padding:6px;border-radius:6px;background:rgba(0,61,165,0.2);color:#7EC8FF}
+.aftr{text-align:center;padding:20px 16px 40px;margin-top:10px;border-top:1px solid rgba(245,166,35,0.2);color:rgba(255,255,255,0.4);font-size:12px;line-height:1.55}
 .aftr strong{color:#F5A623}
 </style></head>
 <body>
@@ -169,20 +173,22 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
   </div>
 </div>
 <div id="map"></div>
+<div id="routingBadge">🛣️ Будуємо маршрут по дорогах…</div>
 <div id="panel"></div>
 <div id="uberwrap"></div>
 <div id="evts"></div>
 <div id="legend">
   <div class="ltit">Вантажівки SAT</div>
-  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#003DA5"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#002270"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>В рейсі — норм.</div>
-  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#F5A623"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC7700"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Жовта — вільна</div>
-  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#EF4444"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC0000"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Червона — крит.</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#003DA5"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#002270"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>В рейсі</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#F5A623"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC7700"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Вільна</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#EF4444"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC0000"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Критична</div>
   <div class="lsep"></div>
-  <div class="ltit">Вантажі (коробки)</div>
+  <div class="ltit">Вантажі</div>
   <div class="lr"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,193,7,0.35)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="rgba(255,193,7,0.5)"/></svg>Не терміново</div>
-  <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="#FFC107"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#FF8F00"/><line x1="6" y1="0" x2="6" y2="12" stroke="#cc7000" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#cc7000" stroke-width="1.2"/></svg>Розглянути</div>
-  <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/><line x1="6" y1="0" x2="6" y2="12" stroke="#00cc00" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#00cc00" stroke-width="1.2"/></svg>🔥 ЗАБЕРИ МЕНЕ!</div>
-  <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 3px white)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,255,255,0.3)"/><rect x="0" y="0" width="14" height="3.5" rx="1" fill="rgba(255,255,255,0.7)"/></svg>● Новий вантаж</div>
+  <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="#FFC107"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#FF8F00"/></svg>Розглянути</div>
+  <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/></svg>🔥 КРИТИЧНО</div>
+  <div class="lsep"></div>
+  <div class="lr" style="color:#39FF14"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="none" stroke="#39FF14" stroke-width="1.5"/></svg>По маршруту</div>
 </div>
 <div id="archpage">
   <nav class="anav">
@@ -190,15 +196,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
     <button class="aback" onclick="document.getElementById('archpage').style.display='none'">← Карта</button>
   </nav>
   <div class="ahero">
-    <h1>Три етапи<br><span class="ahspan">трансформації логістики SAT</span></h1>
-    <p>Від Excel та телефонних дзвінків — до живої системи, яка знає, бачить і передбачає. Кожен етап покриває конкретні функції із 9-ти, що зараз тримає логіст у голові.</p>
+    <h1>Від <span class="ahspan">9 функцій логіста в голові</span><br>до живої системи SAT</h1>
+    <p>Логіст SAT кожні 30–60 хвилин перезбирає рішення, балансуючи вантаж, транспорт, склад, гроші та ризики. Нижче — як це працює зараз і що ми автоматизуємо у три етапи.</p>
   </div>
-  <div class="acards" id="acards"></div>
   <div class="asis">
     <div class="asis-h">
       <div class="asis-tag">AS-IS · як працює сьогодні</div>
       <h2>9 функцій логіста за один цикл</h2>
-      <p>Логіст SAT кожні 30–60 хвилин перезбирає рішення. Це не диспетчер — а планувальник, аналітик і кризис-менеджер в одній особі.</p>
+      <p>Це не диспетчер — а планувальник, аналітик і кризис-менеджер в одній особі. Усе тримається на досвіді людини: захворів — досвід зник.</p>
     </div>
     <div class="asis-role">
       <b>Роль логіста</b>
@@ -206,30 +211,46 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
     </div>
     <div class="asis-grid" id="asis-grid"></div>
   </div>
-  <div class="aftr"><strong>Кожен день Етапу 1 — це дані для чуйки системи на Етапі 3.</strong></div>
+  <div class="tobe">
+    <div class="tobe-sep"><div class="line"></div><div class="tag">TO-BE · що будуємо</div><div class="line"></div></div>
+    <div class="tobe-intro">
+      <h2>Три етапи трансформації</h2>
+      <p>Кожен етап автоматизує конкретні з 9 функцій логіста. Нижче — деталізація плану на основі вашого опису процесу.</p>
+    </div>
+    <div class="acards" id="acards"></div>
+  </div>
+  <div class="aftr"><strong>Кожен день Етапу 1 — це дані для чуйки системи на Етапі 3.</strong><br>Система не замінює логіста — вона дає йому всі функції одночасно і не забуває жодну.</div>
 </div>
 <script>
 var KV=[50.4501,30.5234];
 var CITIES={'Харків':[49.9935,36.2304],'Дніпро':[48.4647,35.0462],'Одеса':[46.4825,30.7233],'Львів':[49.8397,24.0297],'Запоріжжя':[47.8388,35.1396],'Полтава':[49.5883,34.5514],'Вінниця':[49.2328,28.4682],'Черкаси':[49.4444,32.0598],'Кременчук':[49.0651,33.4198],'Миколаїв':[46.9750,31.9946],'Житомир':[50.2547,28.6587],'Суми':[50.9077,34.7981],'Чернігів':[51.4982,31.2893],'Кропивницький':[48.5079,32.2623],'Херсон':[46.6354,32.6169],'Тернопіль':[49.5535,25.5948],'Рівне':[50.6197,26.2516],'Луцьк':[50.7472,25.3254]};
 var CNAMES=Object.keys(CITIES);
 var STOPS={Харків:'Полтава',Запоріжжя:'Дніпро',Одеса:'Кропивницький',Херсон:'Миколаїв'};
-var CTYPES=['Збірний','Паллети','Крихкий','Негабарит'];
-var CARRIERS=['ТОВ Авто-Стандарт','ФОП Левченко','ТЛК Експрес','Регіональні Перевезення'];
-var TRUCK_FMT=['Фура 20т','Фура 22т','Мала 5т','Тент 10т'];
-var READY=['На складі Києва','Заявлений клієнтом','У транзиті регіоном','Очікується сьогодні'];
-var SPECREQ=['Без особливих вимог','Потрібне кріплення','Не штабелювати','Температурний режим','Хрупкий — обережно'];
+var CTYPES=['Збірний','Паллети','Крихкий','Негабарит','Хімія','Електроніка','Меблі','Продукти'];
+var FRAGILE_TYPES=['Крихкий','Електроніка'];
+var OVERSIZE_TYPES=['Негабарит','Меблі'];
+var READY=['На складі Києва','Прийняли в регіоні','У транзиті','Заявлений (ще не отримано)'];
+var REQS=['Без особливих умов','Темп. режим','Кріплення','Без пилу','Без перевантажень'];
 var NM=['Сергій Коваленко','Василь Петренко','Микола Бондаренко','Олег Савченко','Іван Мельник','Тарас Кравченко','Андрій Поліщук','Юрій Лисенко','Павло Гриценко','Олексій Романюк','Богдан Ткаченко','Владислав Марченко','Артем Сидоренко','Руслан Пономаренко','Максим Степаненко','Віктор Захаренко','Денис Зінченко','Ігор Остапенко','Петро Шевченко','Роман Ковальчук','Олександр Дмитренко','Михайло Олійник','Федір Терещенко','Степан Іваненко','Григорій Гончаренко','Остап Шульга','Ярослав Нечипоренко','Анатолій Білик','Сергій Литвиненко','Василь Мороз','Микола Гладченко','Олег Тимченко','Іван Хоменко','Тарас Панченко','Андрій Власенко','Юрій Науменко','Павло Чорненко','Олексій Тищенко','Богдан Павленко','Дмитро Клименко','Руслан Ярошенко','Максим Федоренко','Ігор Лещенко','Петро Проценко','Роман Зубченко','Олександр Корнієнко','Михайло Данченко','Федір Горбаченко','Анатолій Піщаленко','Василь Коломієць'];
-var SD=['ТОВ Техноком','Агро-Союз','МедТех','Промімпорт','АгроТрейд','БудМатеріали','ФОП Ковальчук','ТОВ Агровест'];
-var PB=['Лопнуло колесо','Двигун не заводиться','ДТП - чекаємо ДАІ','Водій захворів'];
-var DL=['Затримка через затори','Обїзд через ремонт','Затримка у клієнта'];
+var CARRIERS=['ТОВ Альфа-Транс','ФОП Шевчук','ТОВ ВітТранс','Київ-Авто Логістика','ФОП Ковальчук'];
+var SD=['ТОВ Техноком','Агро-Союз','МедТех','Промімпорт','АгроТрейд','БудМатеріали','ФОП Ковальчук','ТОВ Агровест','Київ-Молокозавод','Електронмаш'];
+var PB=['Лопнуло колесо','Двигун не заводиться','ДТП — чекаємо ДАІ','Водій захворів'];
+var DL=['Затримка через затори','Об\'їзд через ремонт','Затримка у клієнта'];
 var TCOL={b:'#003DA5',y:'#F5A623',r:'#EF4444'};
 var TST={b:'В рейсі',y:'Вільна',r:'Тривога'};
+var TFORMAT={b:['Фура 20т','Фура 22т','Фура 18т'],y:['Фура 20т','5-тонник'],r:['Фура 20т']};
+
 function ri(a,b){return Math.floor(a+Math.random()*(b-a+1));}
 function pk(a){return a[Math.floor(Math.random()*a.length)];}
 function lerp(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];}
 function gPl(){var L='АВЕКІМНОРСТУХ';function r(){return L[ri(0,L.length-1)];}return r()+r()+' '+ri(1000,9999)+' '+r()+r();}
 function ns(){return new Date().toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'});}
-function distKm(a,b){var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLng=(b[1]-a[1])*Math.PI/180,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;var x=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function haversineKm(lat1,lng1,lat2,lng2){
+  var R=6371,toR=function(x){return x*Math.PI/180;};
+  var dLat=toR(lat2-lat1),dLng=toR(lng2-lng1);
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(toR(lat1))*Math.cos(toR(lat2))*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
 var map=L.map('map',{zoomControl:false}).setView([49.0,31.5],6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
@@ -242,16 +263,38 @@ Object.keys(DIST).forEach(function(dest){
   for(var i=0;i<n&&tid<50;i++,tid++){
     var r=Math.random();var s=r<0.58?'b':r<0.85?'y':'r';
     var load=s==='b'?ri(75,99):s==='y'?ri(12,48):ri(20,72);
-    var fmt=pk(TRUCK_FMT);
-    var capT=fmt.indexOf('22')>=0?22:fmt.indexOf('20')>=0?20:fmt.indexOf('10')>=0?10:5;
-    var capV=capT*4;
-    var curT=(capT*load/100).toFixed(1);
-    var curV=Math.round(capV*load/100);
-    trucks.push({id:'T'+('000'+(tid+1)).slice(-3),plate:gPl(),driver:NM[tid]||'Водій '+tid,phone:'+380 9'+ri(0,9)+' '+ri(100,999)+' '+ri(1000,9999),dest:dest,stop:STOPS[dest]||null,prog:0.05+Math.random()*0.82,spd:0.0008+Math.random()*0.0008,s:s,load:load,prob:s==='b'?ri(83,99):s==='y'?ri(68,88):ri(18,52),cargo:pk(CTYPES),w:curT,v:curV,capT:capT,capV:capV,fmt:fmt,carrier:pk(CARRIERS),tariffKm:ri(28,42),retDay:Math.random()<0.65,eta:ri(17,22)+':'+['00','15','30','45'][ri(0,3)],msg:s==='r'?pk(PB):s==='y'?pk(DL):'На маршруті, все добре',mt:ri(13,15)+':'+['00','15','30','45'][ri(0,3)]});
+    var freeT=(20*(100-load)/100).toFixed(1);
+    var freeV=Math.round(80*(100-load)/100);
+    trucks.push({
+      id:'T'+('000'+(tid+1)).slice(-3),
+      plate:gPl(),
+      driver:NM[tid]||'Водій '+tid,
+      phone:'+380 9'+ri(0,9)+' '+ri(100,999)+' '+ri(1000,9999),
+      carrier:pk(CARRIERS),
+      format:pk(TFORMAT[s]),
+      dest:dest,
+      stop:STOPS[dest]||null,
+      prog:0.05+Math.random()*0.82,
+      spd:0.0008+Math.random()*0.0008,
+      s:s,load:load,freeT:freeT,freeV:freeV,
+      prob:s==='b'?ri(83,99):s==='y'?ri(68,88):ri(18,52),
+      cargo:pk(CTYPES),
+      w:(4+Math.random()*18).toFixed(1),
+      v:ri(15,78),
+      eta:ri(17,22)+':'+['00','15','30','45'][ri(0,3)],
+      tariff:ri(18,32)*1000,
+      kmTotal:ri(280,650),
+      kmDone:0,
+      backplan:Math.random()<0.55?'Так — заявка на '+pk(CTYPES.slice(0,4))+' '+(2+Math.random()*8).toFixed(1)+'т':'Ні — одностороннє',
+      backRisk:Math.random()<0.45?'високий':'низький',
+      msg:s==='r'?pk(PB):s==='y'?pk(DL):'На маршруті, все добре',
+      mt:ri(13,15)+':'+['00','15','30','45'][ri(0,3)]
+    });
   }
 });
+trucks.forEach(function(t){t.kmDone=Math.round(t.kmTotal*t.prog);});
 
-function truckSVG(s) {
+function truckSVG(s){
   var col=TCOL[s];
   var dark=s==='b'?'#002270':s==='y'?'#CC7700':'#CC0000';
   var wc=s==='b'?'rgba(180,215,255,0.9)':s==='y'?'rgba(255,255,200,0.9)':'rgba(255,200,200,0.9)';
@@ -269,7 +312,7 @@ function truckSVG(s) {
     '</svg></div>';
 }
 
-function boxSVG(sz, u, isNew) {
+function boxSVG(sz,u,isNew){
   var fills=['rgba(255,220,100,0.35)','#FFC107','rgba(57,255,20,0.3)'];
   var tops=['rgba(255,180,0,0.5)','#FF8F00','#39FF14'];
   var lines=['rgba(180,120,0,0.4)','#cc7000','#00cc00'];
@@ -287,36 +330,33 @@ function boxSVG(sz, u, isNew) {
     '</svg></div>';
 }
 
-function mkIcon(s){
-  return L.divIcon({html:truckSVG(s),className:'',iconSize:[54,34],iconAnchor:[27,34],popupAnchor:[0,-36]});
-}
-function cgIcon(u,isNew){
-  var sz=isNew?18:[12,16,19][u];
-  return L.divIcon({html:boxSVG(sz,u,isNew),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2-2]});
-}
+function mkIcon(s){return L.divIcon({html:truckSVG(s),className:'',iconSize:[54,34],iconAnchor:[27,34],popupAnchor:[0,-36]});}
+function cgIcon(u,isNew){var sz=isNew?18:[12,16,19][u];return L.divIcon({html:boxSVG(sz,u,isNew),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2-2]});}
 
 function truckTipHtml(t){
   var stCol={b:'#7EC8FF',y:'#FFD700',r:'#FF6B6B'}[t.s];
   return '<b>🚛 '+t.plate+'</b><span class="tt-st" style="background:'+TCOL[t.s]+';color:#fff">'+TST[t.s]+'</span>'+
     '<br>'+t.driver+
     '<br>→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+
-    '<br>Завант. '+t.load+'% · '+t.cargo+' '+t.w+'т';
+    '<br>Завант. '+t.load+'% · '+t.cargo+
+    '<br><span class="tt-mut">Формат: '+t.format+'</span>';
 }
 
-function cargoTipHtml(cd,u,price){
-  var UL=['Не пріоритетно','Варто розглянути','🔥 КРИТИЧНО'];
-  var UC=['#9CA3AF','#F5A623','#39FF14'];
-  return '<b>📦 '+cd.type+' · '+cd.w+'т</b><span class="tt-st" style="background:'+UC[u]+';color:#003DA5">'+UL[u]+'</span>'+
-    '<br>'+cd.sender+
-    '<br>'+cd.nearCity+' → <span style="color:#FFD700">'+cd.dest+'</span>'+
-    '<br><span style="color:#FFD700;font-weight:700">'+price.toLocaleString()+' грн</span>';
+function cargoTipHtml(d,u,price){
+  var ULsh=['Не пріоритетно','Розглянути','🔥 КРИТИЧНО'][u];
+  var UCsh=['rgba(255,193,7,0.7)','#FF8F00','#39FF14'][u];
+  return '<b>📦 '+d.type+' '+d.w+'т</b>'+
+    '<span class="tt-st" style="background:'+UCsh+';color:#003DA5">'+ULsh+'</span>'+
+    '<br><span class="tt-mut">'+d.sender+'</span>'+
+    '<br>→ '+d.nearCity+' → '+d.dest+
+    '<br><span class="tt-pr">'+price.toLocaleString()+' грн</span>';
 }
 
 var tMarkers={};
 trucks.forEach(function(t){
   var pos=lerp(KV,CITIES[t.dest],t.prog);
   var m=L.marker(pos,{icon:mkIcon(t.s),zIndexOffset:100}).addTo(map);
-  m.bindTooltip(truckTipHtml(t),{direction:'top',offset:[0,-30],className:'truck-tip',sticky:false});
+  m.bindTooltip(truckTipHtml(t),{direction:'top',offset:[0,-30],className:'map-tip',sticky:false});
   m.on('click',function(){openTruck(t,m);});
   tMarkers[t.id]=m;
 });
@@ -325,14 +365,18 @@ setInterval(function(){
   trucks.forEach(function(t){
     t.prog+=t.spd+(Math.random()-0.5)*0.0003;
     if(t.prog>0.96)t.prog=0.05;
+    t.kmDone=Math.round(t.kmTotal*t.prog);
     if(tMarkers[t.id])tMarkers[t.id].setLatLng(lerp(KV,CITIES[t.dest],t.prog));
   });
 },2000);
 
-var routeLayer=null;
-function clearRoute(){if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}}
+var routeLayer=null;var nearbyLayer=null;
+function clearRoute(){
+  if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
+  if(nearbyLayer){map.removeLayer(nearbyLayer);nearbyLayer=null;}
+}
 
-var isolated=false;var focusedTruckId=null;var nearCargoIds=[];
+var isolated=false;var focusedTruckId=null;
 function isolateTruck(tid){
   isolated=true;focusedTruckId=tid;
   Object.keys(tMarkers).forEach(function(id){
@@ -344,72 +388,102 @@ function restoreAll(){
   Object.keys(tMarkers).forEach(function(id){
     try{tMarkers[id].addTo(map);}catch(e){}
   });
-  nearCargoIds.forEach(function(cid){
-    var ac=activeCargo.find(function(a){return a.id===cid;});
-    if(ac)try{ac.marker.setIcon(cgIcon(ac.u,false));}catch(e){}
-  });
-  nearCargoIds=[];
   isolated=false;focusedTruckId=null;
 }
 
-function osrmRoute(points){
-  var coords=points.map(function(p){return p[1]+','+p[0];}).join(';');
-  var url='https://router.project-osrm.org/route/v1/driving/'+coords+'?overview=full&geometries=geojson';
-  return fetch(url).then(function(r){return r.json();}).then(function(d){
-    if(d&&d.routes&&d.routes[0]&&d.routes[0].geometry)return d.routes[0].geometry.coordinates.map(function(c){return[c[1],c[0]];});
-    return null;
-  }).catch(function(){return null;});
+function drawCity(latlng,name,col,isHQ){
+  return [
+    L.circleMarker(latlng,{radius:isHQ?7:8,color:isHQ?'#F5A623':col,fillColor:isHQ?'#F5A623':'#fff',fillOpacity:1,weight:isHQ?2:3}),
+    L.marker(latlng,{icon:L.divIcon({html:'<div style="background:'+(isHQ?'#003DA5':col)+';color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;margin-top:2px;box-shadow:0 1px 4px rgba(0,0,0,0.3);'+(isHQ?'border:1px solid #F5A623':'')+'">'+name+'</div>',className:'',iconAnchor:[0,0]})})
+  ];
 }
 
-function highlightNearbyCargos(routePts){
-  if(!routePts||!routePts.length)return [];
-  var near=[];
+function buildStraightRoute(points,col){
+  var layers=[];
+  for(var i=0;i<points.length-1;i++){
+    var opacity=i===0?0.9:0.5;
+    var weight=i===0?5:3;
+    var dash=i===0?null:'10 6';
+    var seg=L.polyline([points[i],points[i+1]],{color:col,weight:weight,opacity:opacity,lineCap:'round',lineJoin:'round'});
+    if(dash)seg.setStyle({dashArray:dash});
+    layers.push(seg);
+  }
+  return layers;
+}
+
+async function fetchRoadsRoute(points){
+  try{
+    var coordsStr=points.map(function(p){return p[1]+','+p[0];}).join(';');
+    var url='https://router.project-osrm.org/route/v1/driving/'+coordsStr+'?overview=full&geometries=geojson';
+    var ctl=new AbortController();
+    var tmo=setTimeout(function(){ctl.abort();},6000);
+    var r=await fetch(url,{signal:ctl.signal});
+    clearTimeout(tmo);
+    if(!r.ok)return null;
+    var j=await r.json();
+    if(!j.routes||!j.routes[0])return null;
+    return {
+      coords:j.routes[0].geometry.coordinates.map(function(c){return [c[1],c[0]];}),
+      distance:j.routes[0].distance,
+      duration:j.routes[0].duration
+    };
+  }catch(e){return null;}
+}
+
+function highlightNearbyCargos(routeCoords){
+  if(!routeCoords||!routeCoords.length)return null;
+  var lg=L.layerGroup();
+  var count=0;
   activeCargo.forEach(function(ac){
-    var minD=Infinity;
-    for(var i=0;i<routePts.length;i+=Math.max(1,Math.floor(routePts.length/40))){
-      var d=distKm(ac.marker.getLatLng().lat?[ac.marker.getLatLng().lat,ac.marker.getLatLng().lng]:ac.data.pos,routePts[i]);
-      if(d<minD)minD=d;
+    var ll=ac.marker.getLatLng();
+    var minDist=Infinity;
+    for(var i=0;i<routeCoords.length;i+=4){
+      var d=haversineKm(ll.lat,ll.lng,routeCoords[i][0],routeCoords[i][1]);
+      if(d<minDist)minDist=d;
+      if(minDist<5)break;
     }
-    if(minD<60){
-      near.push({ac:ac,dist:minD});
-      try{ac.marker.setIcon(L.divIcon({html:'<div class="cg-near" style="display:inline-block">'+boxSVG([14,18,22][ac.u],ac.u,false).replace('<div style="display:inline-block;','<div style="display:inline-block;')+'</div>',className:'',iconSize:[[14,18,22][ac.u],[14,18,22][ac.u]],iconAnchor:[[14,18,22][ac.u]/2,[14,18,22][ac.u]/2]}));}catch(e){}
+    if(minDist<60){
+      ac.nearDist=Math.round(minDist);
+      var c=L.circleMarker(ll,{radius:14,color:'#39FF14',weight:2,fillOpacity:0,opacity:0.85});
+      c.bindTooltip('🎯 '+ac.nearDist+' км до маршруту · '+ac.data.type+' '+ac.data.w+'т · '+ac.price.toLocaleString()+' грн',{direction:'top',className:'map-tip'});
+      lg.addLayer(c);count++;
+    }else{
+      ac.nearDist=null;
     }
   });
-  near.sort(function(a,b){return a.dist-b.dist;});
-  nearCargoIds=near.map(function(x){return x.ac.id;});
-  return near;
+  if(count>0)addEvt('🎯 Знайдено '+count+' вантажів по маршруту','cargo');
+  return lg;
 }
 
-function showRoute(t,mlat,mlng){
+async function showRoute(t,mlat,mlng){
   clearRoute();
-  var dest=CITIES[t.dest];if(!dest)return Promise.resolve([]);
+  var dest=CITIES[t.dest];if(!dest)return null;
   var col=TCOL[t.s];var mpos=[mlat,mlng];
   var spos=t.stop&&CITIES[t.stop]?CITIES[t.stop]:null;
-  var startPts=[KV,mpos];var endPts=spos?[mpos,spos,dest]:[mpos,dest];
+  var ptsForRoute=spos?[KV,mpos,spos,dest]:[KV,mpos,dest];
+
+  var approxLayers=buildStraightRoute(ptsForRoute,col);
+  drawCity(KV,'Київ','#003DA5',true).forEach(function(l){approxLayers.push(l);});
+  if(spos)drawCity(spos,t.stop,col,false).forEach(function(l){approxLayers.push(l);});
+  drawCity(dest,t.dest,col,false).forEach(function(l){approxLayers.push(l);});
+  routeLayer=L.layerGroup(approxLayers).addTo(map);
+  map.fitBounds(L.latLngBounds(ptsForRoute),{padding:[80,80]});
+
+  document.getElementById('routingBadge').style.display='block';
+  var res=await fetchRoadsRoute(ptsForRoute);
+  document.getElementById('routingBadge').style.display='none';
+  if(!res||!routeLayer)return res;
+
+  clearRoute();
   var layers=[];
-
-  function staticPart(){
-    layers.push(L.circleMarker(KV,{radius:7,color:'#F5A623',fillColor:'#F5A623',fillOpacity:1,weight:2}));
-    layers.push(L.marker(KV,{icon:L.divIcon({html:'<div style="background:#003DA5;color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-top:2px;border:1px solid #F5A623">Київ</div>',className:'',iconAnchor:[0,0]})}));
-    if(spos){
-      layers.push(L.circleMarker(spos,{radius:6,color:col,fillColor:'#fff',fillOpacity:1,weight:2.5}));
-      layers.push(L.marker(spos,{icon:L.divIcon({html:'<div style="background:'+col+';color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;margin-top:2px;box-shadow:0 1px 4px rgba(0,0,0,0.3)">'+t.stop+'</div>',className:'',iconAnchor:[0,0]})}));
-    }
-    layers.push(L.circleMarker(dest,{radius:8,color:col,fillColor:'#fff',fillOpacity:1,weight:3}));
-    layers.push(L.marker(dest,{icon:L.divIcon({html:'<div style="background:'+col+';color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;margin-top:2px;box-shadow:0 1px 4px rgba(0,0,0,0.3)">'+t.dest+'</div>',className:'',iconAnchor:[0,0]})}));
-  }
-
-  return Promise.all([osrmRoute(startPts),osrmRoute(endPts)]).then(function(res){
-    var driven=res[0]||[KV,mpos];
-    var future=res[1]||(spos?[mpos,spos,dest]:[mpos,dest]);
-    layers.push(L.polyline(driven,{color:col,weight:5,opacity:0.92,lineCap:'round',lineJoin:'round'}));
-    layers.push(L.polyline(future,{color:col,weight:3,opacity:0.55,dashArray:'10 6',lineCap:'round'}));
-    staticPart();
-    routeLayer=L.layerGroup(layers).addTo(map);
-    var pts=spos?[KV,mpos,spos,dest]:[KV,mpos,dest];
-    map.fitBounds(L.latLngBounds(pts),{padding:[80,80]});
-    return future;
-  });
+  layers.push(L.polyline(res.coords,{color:col,weight:5,opacity:0.85,lineCap:'round',lineJoin:'round'}));
+  drawCity(KV,'Київ','#003DA5',true).forEach(function(l){layers.push(l);});
+  if(spos)drawCity(spos,t.stop,col,false).forEach(function(l){layers.push(l);});
+  drawCity(dest,t.dest,col,false).forEach(function(l){layers.push(l);});
+  routeLayer=L.layerGroup(layers).addTo(map);
+  nearbyLayer=highlightNearbyCargos(res.coords);
+  if(nearbyLayer)nearbyLayer.addTo(map);
+  return res;
 }
 
 map.on('click',function(){clearRoute();closePanel();});
@@ -418,64 +492,97 @@ var panel=document.getElementById('panel');
 function showPanel(html){panel.innerHTML=html;panel.classList.add('open');}
 function closePanel(){panel.classList.remove('open');clearRoute();restoreAll();}
 
-function openTruck(t,m){
+async function openTruck(t,m){
   isolateTruck(t.id);
   var ll=m.getLatLng();
-  showRoute(t,ll.lat,ll.lng).then(function(futurePts){
-    var near=highlightNearbyCargos(futurePts);
-    renderTruckPanel(t,m,near);
-  });
-}
-
-function renderTruckPanel(t,m,nearCargos){
+  var routePromise=showRoute(t,ll.lat,ll.lng);
   var col=TCOL[t.s];
-  var sl={b:'✅ В рейсі',y:'⚠️ Вільна',r:'🚨 Критична ситуація'}[t.s];
+  var sl={b:'✅ В рейсі',y:'⚠️ Вільна / Недозавантажена',r:'🚨 Критична ситуація'}[t.s];
   var hg={b:'linear-gradient(135deg,#002270,#003DA5)',y:'linear-gradient(135deg,#CC7700,#F5A623)',r:'linear-gradient(135deg,#7F1D1D,#EF4444)'}[t.s];
   var pc=t.prob>=83?'#16A34A':t.prob>=65?'#D97706':'#DC2626';
   var lc=t.load>=80?'#16A34A':t.load>=55?'#D97706':'#DC2626';
   var route=t.stop?'Київ → '+t.stop+' → '+t.dest:'Київ → '+t.dest;
-  var freeT=(t.capT-parseFloat(t.w)).toFixed(1);
-  var freeV=t.capV-t.v;
-  var tariff=t.tariffKm;
-  var distApprox=Math.round(distKm(KV,CITIES[t.dest]));
-  var revenue=(tariff*distApprox).toLocaleString();
-  var nearHtml=nearCargos.slice(0,5).map(function(x){
-    var UL=['Не терм.','Розглянути','🔥 КРИТ'];
-    return '<div class="pnear-item"><div class="pnear-l"><b>'+x.ac.data.type+' '+x.ac.data.w+'т</b> · '+x.ac.data.nearCity+' → '+x.ac.data.dest+'<br><span style="color:#6b7280;font-size:10px">'+UL[x.ac.u]+' · ~'+Math.round(x.dist)+' км від маршруту</span></div><div class="pnear-r">'+x.ac.price.toLocaleString()+' грн</div></div>';
-  }).join('')||'<div style="color:#9ca3af;font-size:11px;padding:6px 0">Поблизу маршруту вільних вантажів зараз нема.</div>';
-  var riskTxt=t.s==='r'?'⚠️ <b>Поломка</b> — перезбір всієї схеми (Етап 4). Альтернатива: круговий рейс через '+ (t.stop||'найближче місто') +' з підбором аутсорс-авто.':t.s==='y'?'Вільна потужність '+freeT+'т / '+freeV+'м³. Перевірити підбір вантажу на цьому етапі (Етап 5).':'Прогноз вчасно — '+t.prob+'%. На етапі T-0 (ранковий перерахунок) ризик коректується.';
+  var fragile=FRAGILE_TYPES.indexOf(t.cargo)>-1;
+  var oversize=OVERSIZE_TYPES.indexOf(t.cargo)>-1;
+  var spec=fragile?'⚠️ Крихкий':oversize?'⚠️ Негабарит':'Стандартний';
+  var backCol=t.backRisk==='високий'?'#DC2626':'#16A34A';
 
   var h='<div class="phdr" style="background:'+hg+'">'+
-    '<div><div class="pt">🚛 '+t.plate+' · '+t.fmt+'</div><div class="ps">'+t.driver+' · '+t.phone+' · '+t.carrier+'</div></div>'+
+    '<div><div class="pt">🚛 '+t.plate+' · '+t.format+'</div><div class="ps">'+t.driver+' · '+t.phone+'</div></div>'+
     '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+sl+'</div>'+
     '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
-    '<div class="pbody">'+
-    '<div class="prow"><span class="plbl">Маршрут</span><span class="pval">'+route+'</span></div>'+
-    '<div class="prow"><span class="plbl">ETA пункту призн.</span><span class="pval">'+t.eta+' · ~'+distApprox+' км</span></div>'+
-    '<div class="prow"><span class="plbl">Накладна</span><span class="pval">'+t.id+'-2026</span></div>'+
-    '</div>'+
-    '<div class="psec"><div class="psec-h">Вантаж та завантаження</div>'+
-    '<div class="prow"><span class="plbl">Тип</span><span class="pval">'+t.cargo+'</span></div>'+
-    '<div class="prow"><span class="plbl">Поточне</span><span class="pval">'+t.w+'т / '+t.v+'м³</span></div>'+
-    '<div class="prow"><span class="plbl">Місткість</span><span class="pval">'+t.capT+'т / '+t.capV+'м³</span></div>'+
-    '<div class="prow"><span class="plbl">Вільно</span><span class="pval" style="color:'+(parseFloat(freeT)>2?'#16A34A':'#6b7280')+'">'+freeT+'т / '+freeV+'м³</span></div></div>'+
-    '<div class="pbar"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:4px"><span>Завантаженість (ціль 90–95%)</span><span>'+t.load+'%</span></div>'+
+
+    '<div class="psec"><div class="psec-t">Маршрут (ЕТАП 3, 6)</div>'+
+    '<div class="prow"><span class="plbl">Напрямок</span><span class="pval">'+route+'</span></div>'+
+    '<div class="prow"><span class="plbl">Пройдено / Залишилось</span><span class="pval">'+t.kmDone+' км / '+(t.kmTotal-t.kmDone)+' км</span></div>'+
+    '<div class="prow"><span class="plbl">ETA</span><span class="pval">'+t.eta+'</span></div>'+
+    '<div class="prow"><span class="plbl">Перевізник</span><span class="pval">'+t.carrier+'</span></div></div>'+
+
+    '<div class="psec"><div class="psec-t">Вантаж зараз</div>'+
+    '<div class="prow"><span class="plbl">Тип / Маса / Об\'єм</span><span class="pval">'+t.cargo+' · '+t.w+'т · '+t.v+'м³</span></div>'+
+    '<div class="prow"><span class="plbl">Особливості</span><span class="pval">'+spec+'</span></div>'+
+    '<div class="prow"><span class="plbl">Накладна</span><span class="pval">'+t.id+'-2026</span></div></div>'+
+
+    '<div class="pbar"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:4px"><span>Завантаженість (ціль 90–95%)</span><span style="color:'+lc+';font-weight:700">'+t.load+'%</span></div>'+
     '<div class="pbg"><div class="pbf" style="width:'+t.load+'%;background:'+lc+'"></div></div></div>'+
-    '<div class="psec"><div class="psec-h">Економіка рейсу</div>'+
-    '<div class="prow"><span class="plbl">Тариф</span><span class="pval">'+tariff+' грн/км</span></div>'+
-    '<div class="prow"><span class="plbl">Виручка рейсу</span><span class="pval" style="color:#003DA5">~'+revenue+' грн</span></div>'+
-    '<div class="prow"><span class="plbl">Зворотний потік</span><span class="pval">'+(t.retDay?'<span class="pchip g">+ є замовлення</span>':'<span class="pchip r">— односторонній</span>')+'</span></div></div>'+
+
+    '<div class="psec"><div class="psec-t">Залишок місткості (ЕТАП 5)</div>'+
+    '<div class="prow"><span class="plbl">Тоннаж вільний</span><span class="pval">'+t.freeT+' т</span></div>'+
+    '<div class="prow"><span class="plbl">Об\'єм вільний</span><span class="pval">'+t.freeV+' м³</span></div>'+
+    '<div class="prow"><span class="plbl">Тариф рейсу</span><span class="pval">'+t.tariff.toLocaleString()+' грн</span></div></div>'+
+
     '<div class="pprob"><div class="pdot" style="background:'+pc+'"></div><span style="font-size:12px">Прибуття вчасно: <strong style="color:'+pc+'">'+t.prob+'%</strong></span></div>'+
-    '<div class="psec"><div class="psec-h">Вантажі поблизу маршруту</div>'+nearHtml+'</div>'+
-    '<div class="psec"><div class="psec-h">Ризики та рекомендації</div><div class="prisk">'+riskTxt+'</div></div>'+
-    (t.s!=='b'?'<div class="palert"><div class="pat">'+(t.s==='r'?'🚨 КРИТИЧНО':'⚠️ ВІЛЬНА — потрібен вантаж')+'</div><div class="pab">'+t.msg+'</div></div>':'')+
-    '<div class="pmsg">💬 '+t.mt+': "'+t.msg+'"</div>'+
-    '<a href="tel:'+t.phone.replace(/\\s/g,'')+'" class="pcall">📞 Зателефонувати водію '+t.phone+'</a>';
+
+    (t.s!=='b'?'<div class="palert"><div class="pat">'+(t.s==='r'?'🚨 КРИТИЧНО — потрібна реакція':'⚠️ ВІЛЬНА — потрібен вантаж')+'</div><div class="pab">'+t.msg+'</div></div>':'')+
+
+    '<div class="psec" style="background:#F0F9FF"><div class="psec-t" style="color:#0369A1">🎯 Зворотний потік (ЕТАП 9)</div>'+
+    '<div class="prow"><span class="plbl">План на завтра</span><span class="pval">'+t.backplan+'</span></div>'+
+    '<div class="prow"><span class="plbl">Ризик одностороннього</span><span class="pval" style="color:'+backCol+'">'+t.backRisk+'</span></div></div>'+
+
+    '<div class="pgood" id="pnearby"><b>🛣️ По маршруту…</b><br><span style="color:#6b7280;font-size:11px">Будуємо дорогу та шукаємо попутні вантажі…</span></div>'+
+
+    '<div class="pmsg">💬 '+t.mt+' (водій): "'+t.msg+'"</div>'+
+    '<a href="tel:'+t.phone.replace(/\s/g,'')+'" class="pcall">📞 Зателефонувати водію '+t.phone+'</a>';
   showPanel(h);
+
+  var res=await routePromise;
+  var nb=document.getElementById('pnearby');
+  if(nb){
+    if(res){
+      var km=Math.round(res.distance/1000);
+      var mins=Math.round(res.duration/60);
+      var near=activeCargo.filter(function(ac){return ac.nearDist!=null;});
+      near.sort(function(a,b){return a.nearDist-b.nearDist;});
+      var top=near.slice(0,5);
+      var nearHtml=top.length?'<div style="margin-top:6px">'+top.map(function(ac){return '<span class="pchip" style="background:rgba(57,255,20,0.15);color:#15803D">'+ac.data.type+' '+ac.data.w+'т · '+ac.nearDist+'км · '+ac.price.toLocaleString()+'грн</span>';}).join('')+'</div>':'<div style="color:#6b7280;font-size:11px;margin-top:4px">Поряд з маршрутом нічого підходящого не знайдено</div>';
+      nb.innerHTML='<b>🛣️ Маршрут по дорогах:</b> '+km+' км · ≈'+Math.floor(mins/60)+'г '+(mins%60)+'хв'+
+        '<br><b>🎯 Поруч ('+near.length+'):</b> '+nearHtml;
+    }else{
+      nb.innerHTML='<b>🛣️ Маршрут</b><br><span style="color:#6b7280;font-size:11px">Прямі лінії — роутер недоступний</span>';
+    }
+  }
 }
 
 var pool=[];
-for(var pi=0;pi<300;pi++){var cn=pk(CNAMES);var cc=CITIES[cn];pool.push({id:pi,nearCity:cn,pos:[Math.max(44.5,Math.min(52.2,cc[0]+(Math.random()-0.5)*1.8)),Math.max(22.5,Math.min(39.8,cc[1]+(Math.random()-0.5)*2.2))],w:(0.5+Math.random()*15).toFixed(1),vol:ri(2,28),type:pk(CTYPES),sender:pk(SD),dest:pk(CNAMES),ready:pk(READY),specReq:pk(SPECREQ),deadlineH:ri(6,72),maxAge:ri(40,160)});}
+for(var pi=0;pi<300;pi++){
+  var cn=pk(CNAMES);var cc=CITIES[cn];
+  pool.push({
+    id:pi,nearCity:cn,
+    pos:[Math.max(44.5,Math.min(52.2,cc[0]+(Math.random()-0.5)*1.8)),Math.max(22.5,Math.min(39.8,cc[1]+(Math.random()-0.5)*2.2))],
+    w:(0.5+Math.random()*15).toFixed(1),
+    v:ri(2,40),
+    type:pk(CTYPES),
+    sender:pk(SD),
+    dest:pk(CNAMES),
+    ready:pk(READY),
+    pickupTime:ri(8,18)+':'+['00','15','30','45'][ri(0,3)],
+    deadline:'завтра '+ri(10,20)+':00',
+    req:pk(REQS),
+    margin:ri(15,42),
+    pickProb:ri(45,92),
+    maxAge:ri(40,160)
+  });
+}
 
 var activeCargo=[];var newUnread=0;
 
@@ -485,10 +592,10 @@ function spawnOne(silent){
   var cd=pk(ia);var r=Math.random();var u=r<0.5?0:r<0.85?1:2;
   var price=[ri(800,3500),ri(2500,6000),ri(9000,18000)][u];
   var m=L.marker(cd.pos,{icon:cgIcon(u,!silent),zIndexOffset:50});
-  m.bindTooltip(cargoTipHtml(cd,u,price),{direction:'top',offset:[0,-10],className:'cargo-tip',sticky:false});
-  if(!isolated)m.addTo(map);else m.addTo(map);
-  m.on('click',function(e){if(e&&e.originalEvent)e.originalEvent.stopPropagation();openCargo(cd.id);});
-  activeCargo.push({id:cd.id,data:cd,marker:m,u:u,isNew:!silent,age:0,price:price});
+  m.bindTooltip(cargoTipHtml(cd,u,price),{direction:'top',offset:[0,-10],className:'map-tip',sticky:false});
+  m.addTo(map);
+  m.on('click',function(){openCargo(cd.id);});
+  activeCargo.push({id:cd.id,data:cd,marker:m,u:u,isNew:!silent,age:0,price:price,nearDist:null});
   if(!silent){
     newUnread++;updateBadge();addEvt('Новий вантаж — '+cd.nearCity+': '+cd.w+'т '+cd.type,'cargo');
     if(u===2&&Math.random()<0.35)spawnUber(cd,u,price);
@@ -503,14 +610,17 @@ function despawn(id){
   activeCargo=activeCargo.filter(function(a){return a.id!==id;});
 }
 
-function nearestTruckTo(pos){
+function findNearestTruck(cargoPos){
   var best=null,bestD=Infinity;
   trucks.forEach(function(t){
-    var tp=tMarkers[t.id]?tMarkers[t.id].getLatLng():null;if(!tp)return;
-    var d=distKm([tp.lat,tp.lng],pos);
-    if(d<bestD){bestD=d;best=t;}
+    if(t.s==='r')return;
+    if(tMarkers[t.id]){
+      var ll=tMarkers[t.id].getLatLng();
+      var d=haversineKm(cargoPos[0],cargoPos[1],ll.lat,ll.lng);
+      if(d<bestD){bestD=d;best=t;}
+    }
   });
-  return {t:best,d:Math.round(bestD)};
+  return best?{truck:best,dist:Math.round(bestD)}:null;
 }
 
 function openCargo(id){
@@ -519,32 +629,41 @@ function openCargo(id){
   var UL=['Не пріоритетно','Варто розглянути','🔥 КРИТИЧНО'];
   var UG=['linear-gradient(135deg,#003DA5,#0052CC)','linear-gradient(135deg,#CC7700,#F5A623)','linear-gradient(135deg,#14532D,#16A34A)'];
   var d=ac.data;
-  var n=nearestTruckTo(d.pos);
-  var deadlineCh=d.deadlineH<=12?'<span class="pchip r">⚠️ '+d.deadlineH+' год</span>':d.deadlineH<=24?'<span class="pchip y">'+d.deadlineH+' год</span>':'<span class="pchip g">'+d.deadlineH+' год</span>';
-  var readyCh=d.ready==='На складі Києва'?'<span class="pchip g">'+d.ready+'</span>':d.ready==='У транзиті регіоном'?'<span class="pchip b">'+d.ready+'</span>':'<span class="pchip y">'+d.ready+'</span>';
-  var nearTruckHtml=n.t?'<div class="prow"><span class="plbl">Найближча машина</span><span class="pval">'+n.t.plate+' · '+n.d+' км</span></div><div class="prow"><span class="plbl">Її маршрут</span><span class="pval">Київ → '+n.t.dest+'</span></div><div class="prow"><span class="plbl">Вільне місце</span><span class="pval">'+(n.t.capT-parseFloat(n.t.w)).toFixed(1)+'т / '+(n.t.capV-n.t.v)+'м³</span></div>':'';
-  var marginEst=Math.round(ac.price-(n.d||100)*32);
-  var marginColor=marginEst>2000?'#16A34A':marginEst>500?'#D97706':'#DC2626';
-  var probTake=ac.u===2?ri(80,95):ac.u===1?ri(55,80):ri(25,55);
+  var fragile=FRAGILE_TYPES.indexOf(d.type)>-1;
+  var oversize=OVERSIZE_TYPES.indexOf(d.type)>-1;
+  var spec=fragile?'⚠️ Крихкий':oversize?'⚠️ Негабарит':'Стандартний';
+  var marginCol=d.margin>=30?'#16A34A':d.margin>=22?'#D97706':'#DC2626';
+  var probCol=d.pickProb>=75?'#16A34A':d.pickProb>=55?'#D97706':'#DC2626';
+  var nearest=findNearestTruck(d.pos);
+  var nearHtml=nearest?nearest.truck.plate+' ('+nearest.truck.driver+') · '+nearest.dist+' км · до '+nearest.truck.dest:'Поки немає';
 
   var h='<div class="phdr" style="background:'+UG[ac.u]+'">'+
-    '<div><div class="pt">📦 Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="ps">'+d.nearCity+' → '+d.dest+' · '+d.type+' '+d.w+'т</div></div>'+
+    '<div><div class="pt">📦 Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="ps">'+d.nearCity+' → '+d.dest+'</div></div>'+
     '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+UL[ac.u]+'</div>'+
     '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
-    '<div class="pbody">'+
+
+    '<div class="psec"><div class="psec-t">Відправник та параметри (ЕТАП 1)</div>'+
     '<div class="prow"><span class="plbl">Відправник</span><span class="pval">'+d.sender+'</span></div>'+
-    '<div class="prow"><span class="plbl">Тип / Вага / Обʼєм</span><span class="pval">'+d.type+' · '+d.w+'т / '+d.vol+'м³</span></div>'+
+    '<div class="prow"><span class="plbl">Тип / Вага / Об\'єм</span><span class="pval">'+d.type+' · '+d.w+'т · '+d.v+'м³</span></div>'+
     '<div class="prow"><span class="plbl">Напрямок</span><span class="pval">'+d.nearCity+' → '+d.dest+'</span></div>'+
-    '<div class="prow"><span class="plbl">Особливі вимоги</span><span class="pval">'+d.specReq+'</span></div></div>'+
-    '<div class="psec"><div class="psec-h">Готовність та дедлайн</div>'+
-    '<div class="prow"><span class="plbl">Стан</span><span class="pval">'+readyCh+'</span></div>'+
-    '<div class="prow"><span class="plbl">До відправки</span><span class="pval">'+deadlineCh+'</span></div></div>'+
-    '<div class="psec"><div class="psec-h">Підбір машини (Етап 5)</div>'+nearTruckHtml+'</div>'+
-    '<div class="psec"><div class="psec-h">Економіка</div>'+
-    '<div class="prow"><span class="plbl">Ціна вантажу</span><span class="pval" style="color:#003DA5;font-size:14px;font-weight:800">'+ac.price.toLocaleString()+' грн</span></div>'+
-    '<div class="prow"><span class="plbl">Орієнтовна маржа</span><span class="pval" style="color:'+marginColor+'">~'+marginEst.toLocaleString()+' грн</span></div>'+
-    '<div class="prow"><span class="plbl">Імов. забору</span><span class="pval">'+probTake+'%</span></div></div>'+
-    (ac.u===2?'<div style="padding:9px 14px;background:#EFF6FF;border-top:3px solid #003DA5"><div style="padding:7px 11px;background:#DBEAFE;border-radius:7px;font-size:12px;font-weight:700;color:#003DA5;text-align:center">'+UL[ac.u]+' — '+ac.price.toLocaleString()+' грн</div></div>':'')+
+    '<div class="prow"><span class="plbl">Особливості</span><span class="pval">'+spec+' · '+d.req+'</span></div></div>'+
+
+    '<div class="psec"><div class="psec-t">Готовність та терміни (ЕТАП 1, 2)</div>'+
+    '<div class="prow"><span class="plbl">Статус</span><span class="pval">'+d.ready+'</span></div>'+
+    '<div class="prow"><span class="plbl">Готовий до забору</span><span class="pval">сьогодні '+d.pickupTime+'</span></div>'+
+    '<div class="prow"><span class="plbl">Deadline доставки</span><span class="pval">'+d.deadline+'</span></div></div>'+
+
+    '<div class="psec" style="background:#FFFBEB"><div class="psec-t" style="color:#92400E">💰 Економіка (ЕТАП 5)</div>'+
+    '<div class="prow"><span class="plbl">Ціна перевезення</span><span class="pval" style="color:#003DA5;font-size:14px;font-weight:800">'+ac.price.toLocaleString()+' грн</span></div>'+
+    '<div class="prow"><span class="plbl">Орієнтовна маржа</span><span class="pval" style="color:'+marginCol+'">'+d.margin+'%</span></div>'+
+    '<div class="prow"><span class="plbl">Ймовірність забору</span><span class="pval" style="color:'+probCol+'">'+d.pickProb+'%</span></div></div>'+
+
+    '<div class="psec" style="background:#F0FDF4"><div class="psec-t" style="color:#166534">🚛 Найближча машина SAT (ЕТАП 4, 6)</div>'+
+    '<div style="font-size:12px;color:#166534">'+nearHtml+'</div>'+
+    (nearest?'<div style="font-size:10.5px;color:#15803D;margin-top:4px">Залишок місткості: '+nearest.truck.freeT+'т / '+nearest.truck.freeV+'м³ · Завантаженість '+nearest.truck.load+'%</div>':'')+'</div>'+
+
+    (ac.u===2?'<div style="padding:9px 14px;background:#EFF6FF;border-top:3px solid #003DA5"><div style="padding:6px 10px;background:#DBEAFE;border-radius:7px;font-size:12px;font-weight:700;color:#003DA5;text-align:center">🔥 КРИТИЧНО — '+ac.price.toLocaleString()+' грн, маржа '+d.margin+'%</div></div>':'')+
+
     '<div style="display:flex;border-top:1px solid #f3f4f6">'+
     '<button onclick="takeCargo('+id+')" style="flex:1;padding:12px;background:#003DA5;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 0 16px">✓ Взяти вантаж</button>'+
     '<button onclick="closePanel()" style="flex:1;padding:12px;background:#f3f4f6;color:#6b7280;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 16px 0">Пропустити</button></div>';
@@ -563,14 +682,12 @@ function spawnUber(cdata,u,price){uberQ.push({cdata:cdata,u:u,price:price});if(!
 function nextUber(){
   if(!uberQ.length){uberBusy=false;return;}uberBusy=true;
   var item=uberQ.shift();
-  var UL2=['','','🔥 КРИТИЧНО'];
-  var UC2=['','','#16A34A'];
   var card=document.createElement('div');card.className='ucard';
   var cid=item.cdata.id;
   card.innerHTML='<div class="utimer"></div>'+
     '<div class="uhdr"><div><div class="unew">НОВИЙ ВАНТАЖ SAT</div><div class="utit">'+item.cdata.type+' · '+item.cdata.w+'т</div><div class="usub">'+item.cdata.nearCity+' → '+item.cdata.dest+'</div></div>'+
     '<div style="text-align:right"><div class="uprice">'+item.price.toLocaleString()+'</div><div class="ulbl">грн</div></div></div>'+
-    '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:'+UC2[item.u]+';flex-shrink:0"></div><span>'+UL2[item.u]+'</span></div>'+
+    '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:#16A34A;flex-shrink:0"></div><span>🔥 КРИТИЧНО · маржа '+item.cdata.margin+'%</span></div>'+
     '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">✓ Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
   uberWrap.appendChild(card);
   var timer=setTimeout(function(){dismiss(card);},12000);
@@ -625,70 +742,90 @@ setInterval(function(){
   else addEvt(t.plate+' → '+t.dest+' ETA '+t.eta,'truck');
 },15000);
 
+var asisStages=[
+  {n:1,t:'Прогноз гарантованого вантажопотоку (T-1)',d:'Аналіз вантажу на складі Києва, заявленого клієнтами, та того що гарантовано доїде з регіонів. Базовий обсяг по 18–20 напрямках.',q:'Що буде точно, без ілюзій'},
+  {n:2,t:'Прогноз додаткового вантажопотоку',d:'Скільки ще приймуть до кінця дня та завтра. Статистика напрямків, денні патерни, досвід.',q:'Скільки, найімовірніше, буде — і де ризик промаху'},
+  {n:3,t:'Попереднє транспортне рішення',d:'Маршрути, формати авто, кругові vs односторонні. Цільове завантаження 90–95%, складність збірки, тарифи.',q:'Як вивезти все без залишків і не вбити економіку'},
+  {n:4,t:'Перевірка доступності автопарку',d:'Авто потрібних форматів, зобов\'язання перевізників, обмеження водіїв, ризики поломок.',q:'На що реально можна спертися'},
+  {n:5,t:'Робота з дефіцитом транспорту',d:'Наймати додаткові авто чи ні. Кругове vs одностороннє. Резерву авто нема.',q:'Що дешевше і надійніше прямо зараз'},
+  {n:6,t:'Гнучке резервування і відкладені рішення',d:'Свідомо не ставить частину напрямків — простір для маневру. Розгалужені маршрути.',q:'Лишити свободу для коригування'},
+  {n:7,t:'Оперативні корекції в день відправки (T-0)',d:'Ранковий перерахунок — фактичний вантаж + авто. Фінальне підтвердження або заміна рішень.',q:'Працюємо за фактом, не за очікуваннями'},
+  {n:8,t:'Безперервні комунікації',d:'Склад (крихкі, негабарит), регіони, перевізники, пошук авто, комерція.',q:'Я — центр прийняття рішень у живій системі'},
+  {n:9,t:'Облік зворотного потоку (наступний день)',d:'Замовлення регіонів на авто з Києва. Баланс вивозу та повернення. Мінімізація односторонніх рейсів.',q:'Сьогодні = завтрашня проблема або стабільність'}
+];
+var asisGrid=document.getElementById('asis-grid');
+asisGrid.innerHTML=asisStages.map(function(s){return '<div class="asis-c">'+
+  '<div class="asis-c-h"><div class="asis-c-n">'+s.n+'</div><div class="asis-c-t">'+s.t+'</div></div>'+
+  '<div class="asis-c-d">'+s.d+'</div>'+
+  '<div class="asis-c-q">«'+s.q+'»</div>'+
+  '</div>';}).join('');
+
 var stages=[
   {n:1,tag:'Фундамент · Етап 1',title:'Інформаційна основа',col:'#0EA5E9',
-   prob:'Логіст реконструює повну картину кожні <b>30–60 хвилин</b> з обривків інформації: дзвінки водіїв, повідомлення складу, регіональні звіти, заявки клієнтів. Половина даних — у голові логіста або в розмовах, які зникають без сліду.',
+   prob:'Зараз вся інформація живе <b>у голові одного логіста</b>. Кожні 30-60 хвилин він з нуля реконструює картину по дзвінках і чатах. Захворів — досвід зник, наступник сидить ще тиждень без розуміння.',
    items:[
-     '<b>Telegram-бот як єдина точка збору</b> від водіїв (стан, поломки, ETA), складу (фактичне завантаження, негабарит), регіональних логістів (що приймається сьогодні), комерції (узгоджені затримки)',
-     '<b>Автоматична структуризація</b> неструктурованих повідомлень: парсинг номера машини, типу події, локації, часу. Все летить у єдину базу',
-     '<b>Живий стан у будь-який момент</b>: де кожна машина, що з кожним напрямком (18–20 шт), скільки гарантованого вантажу на складі, що в транзиті',
-     '<b>Дашборд оновлюється сам</b> — логіст відкрив, побачив реальність, не витрачаючи 40 хвилин на обдзвон'
+     '<b>Telegram-бот як єдина точка збору</b> — водії, склад, регіони пишуть в одне місце замість 7 окремих чатів',
+     '<b>Автоматична структуризація подій</b> — повідомлення «Лопнуло колесо на М03» парситься в інцидент з координатами і прив\'язкою до машини',
+     '<b>Живий стан напрямків</b> — для кожного з 18-20 маршрутів видно: вантаж на складі (т/м³), у транзиті, заявлений; машини на лінії та їх ETA',
+     '<b>Дашборд оновлюється сам</b> — логіст не реконструює, він бачить останній стан і фокусується на рішеннях',
+     '<b>Склад → дашборд</b>: крихкі, негабарит, фактична щільність завантаження — як ярлики поряд з кожним вантажем'
    ],
-   funcs:['1','2','7','8'],
-   funcsNote:'Прогноз гарантованого та ймовірнісного вантажопотоку · Оперативні корекції T-0 · Координація учасників',
-   result:'📊 Логіст більше не реконструює картину щогодини — вона є завжди. Звільнений час витрачається на рішення, а не на збір даних.',
-   metric:'~80% поточних "інформаційних" проблем · Реалізація 6–8 тижнів'},
+   covers:[
+     {n:1,t:'Гарантований прогноз'},
+     {n:8,t:'Комунікації'}
+   ],
+   coversText:'Дає логісту <b>повну картину T-1</b> без ручної реконструкції. Усі дані для Етапів 2-9 — звідси.',
+   result:'📊 Логіст бачить актуальну картину без щогодинної реконструкції. Економія ~2-3 години щодня + страховка від хвороби однієї людини.',
+   metric:'~80% поточного болю · Впровадження 6-8 тижнів'},
+
   {n:2,tag:'Проактивність · Етап 2',title:'AI-агенти — живе спостереження',col:'#A855F7',
-   prob:'Логіст фізично не може одночасно тримати в увазі 50 машин і 18–20 напрямків. Сигнал «машина застрягла на 40 хв», «вантаж по дорозі», «зворотний рейс під загрозою» — все це він <b>помітить тільки коли встигне глянути</b>. На переключеннях втрачається сума на круговий рейс або фрахт додаткового авто.',
+   prob:'Логіст сам сканує всі 18-20 напрямків. При 50 машинах це фізично неможливо — <b>щось завжди пропускається</b>. Поломка о 14:00 → схема пересобирається о 16:00 → дві години втрачено.',
    items:[
-     '<b>Окремий агент за кожною машиною</b> працює паралельно 24/7 — стежить за ETA, відхиленнями, ризиками поломки, статусом водія',
-     '<b>Машина стоїть 40+ хв не на адресі</b> → автоматичний сигнал логісту з готовою альтернативою (запасне авто, переміщення вантажу)',
-     '<b>Вантаж по дорозі</b> → агент-сваха пропонує машину з підрахунком: відстань-крюк, вільне місце, маржа, ризик зриву основного рейсу',
-     '<b>Дефіцит автопарку</b> на завтра → агент заздалегідь стукає в пошук авто і пропонує круговий vs односторонній з повним порівнянням'
+     '<b>Окремий агент за кожною машиною 24/7</b> — слідкує за рухом, ETA, статусом водія, відхиленнями',
+     '<b>Машина стоїть 40 хв без причини</b> → автоматичний сигнал логісту з контекстом (де, чому, чим це загрожує)',
+     '<b>Вантаж по дорозі</b> → пропозиція з розрахунком вигоди (км гак, +завантаженість, +дохід — як зараз на дашборді)',
+     '<b>Перевірка доступності автопарку в реальному часі</b> — формат авто, зайнятість, ризики водія, прогноз поломок по пробігу',
+     '<b>Гнучке резервування</b>: агент сам пропонує які напрямки поставити одразу, а які лишити для маневру (Кременчуг через Полтаву чи Черкаси — система рахує обидва варіанти)',
+     '<b>Корекції T-0</b>: вранці агент звіряє план з фактом і підсвічує що треба перевпорядкувати'
    ],
-   funcs:['3','4','5','6'],
-   funcsNote:'Транспортні сценарії · Перевірка автопарку · Робота з дефіцитом · Гнучке резервування',
-   result:'🎯 Система знаходить — логіст лише підтверджує. Рутинне сканування зникає, фокус на ризикованих рішеннях.',
-   metric:'Захоплення 70–80% попутних вантажів · Скорочення холостого пробігу 15–25%'},
+   covers:[
+     {n:4,t:'Доступність автопарку'},
+     {n:5,t:'Дефіцит транспорту'},
+     {n:6,t:'Гнучке резервування'},
+     {n:7,t:'Корекції T-0'}
+   ],
+   coversText:'Система <b>знаходить проблеми і можливості сама</b>. Логіст не сканує — він приймає рішення на вже підготовлених варіантах.',
+   result:'🎯 Замість «логіст шукає» — «система знаходить, логіст підтверджує». Реакція на інциденти швидша у 4-6 разів.'},
+
   {n:3,tag:'Інтелект · Етап 3',title:'Прогнозування та досвід',col:'#F59E0B',
-   prob:'Накопичений роками досвід — «зі Сум зазвичай ще +Х% доїжджає», «у понеділок Полтава дає менше», «після дощу Кременчуг важко» — живе тільки в голові логіста. <b>Захворів — досвід зник.</b> Молодший логіст починає з нуля, бізнес стає вразливим до однієї людини.',
+   prob:'Роками накопичений досвід («з Кропивницького зазвичай доїжджає +15%», «у п\'ятницю після 16:00 пробки на E40») живе <b>тільки в голові логіста</b>. Захворів — досвід зник з компанії.',
    items:[
-     '<b>Система навчається на кожному рейсі</b> та рішенні: яка машина, який маршрут, яка погода, який результат',
-     '<b>Прогноз P10/P50/P90</b> по кожному напрямку: «завтра у Львові буде 8–12–15 тонн з ймовірностями». Логіст бачить не одну цифру, а коридор',
-     '<b>Підказки з історії</b>: «у 70% випадків з цього маршруту вдається завантажитись у зворотньому через таке-то місто»',
-     '<b>Баланс T+1</b>: сьогоднішнє рішення оцінюється з прогнозом завтрашніх замовлень регіонів — щоб не лишити Київ без авто на ранок'
+     '<b>Імовірнісний прогноз додаткового потоку</b> — для кожного напрямку P10/P50/P90 на завтра. Логіст бачить не одне число, а діапазон з впевненістю',
+     '<b>Економічне порівняння альтернатив</b> — фрахт стороннього vs власне коло, з урахуванням ризику відсутності авто. Машина рахує, логіст обирає',
+     '<b>Облік зворотного потоку</b> — для кожного маршруту прогноз: «У 70% випадків звідси вдається завантажитись назад на 3-5т». Балансування сьогоднішнього вивозу з завтрашнім поверненням',
+     '<b>Навчання на кожному рейсі</b> — система зберігає рішення і результат. Через рік вона знає те, що логіст вчив 10 років',
+     '<b>Підказки на основі історії</b> — «Подібна ситуація була 17.04 — тоді спрацювало рішення Х»'
    ],
-   funcs:['2','5','6','9'],
-   funcsNote:'Ймовірнісний прогноз · Економічне порівняння · Управління гнучкістю · Облік зворотного потоку',
-   result:'🧠 Передбачає до того як стало проблемою. Досвід працівника стає активом компанії — він живе в системі, а не в одній голові.',
-   metric:'Точність прогнозу ±5–8% на тижневому горизонті · Готовність до зміни логіста за 1 день'}
+   covers:[
+     {n:2,t:'Імовірнісний прогноз'},
+     {n:3,t:'Транспортне рішення'},
+     {n:9,t:'Зворотний потік'}
+   ],
+   coversText:'Досвід стає <b>активом компанії</b>, а не приватним знанням однієї людини. Система передбачає до того, як стало проблемою.',
+   result:'🧠 Прогноз з допуском замість «здається, буде». Кожне рішення сьогодні робить систему точнішою завтра.'}
 ];
 var acEl=document.getElementById('acards');
 acEl.innerHTML=stages.map(function(s){
+  var coversHtml=s.covers?'<div class="accov"><b>Які функції автоматизує:</b> '+s.coversText+'<div class="accov-fns">'+s.covers.map(function(c){return '<span class="accov-fn">№'+c.n+' · '+c.t+'</span>';}).join('')+'</div></div>':'';
   return '<div class="ac" style="border:1px solid '+s.col+'33">'+
-  '<div class="ach" style="background:'+s.col+'11"><div class="acn" style="background:'+s.col+'22;color:'+s.col+'">'+s.n+'</div>'+
-  '<div><div class="actag" style="color:'+s.col+'">'+s.tag+'</div><div class="actit">'+s.title+'</div></div></div>'+
-  '<div class="acb"><div class="acpr">'+s.prob+'</div><div class="acll">Що змінюємо</div>'+
-  s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+
-  '<div class="ac-funcs"><div class="ac-funcs-h">Автоматизує функції AS-IS</div><div class="ac-funcs-list">'+s.funcs.map(function(f){return '<span class="ac-funcs-chip">№'+f+'</span>';}).join('')+'</div><div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.45">'+s.funcsNote+'</div></div>'+
-  '<div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+
-  '</div></div>';
-}).join('');
-
-var asisStages=[
-  {n:1,t:'Прогноз гарантованого вантажопотоку (T-1)',d:'Аналіз фактичного вантажу на складі Києва, заявленого клієнтами, транзитного по 18–20 напрямках.',q:'Що буде точно, без ілюзій'},
-  {n:2,t:'Прогноз додаткового вантажопотоку',d:'Скільки ще приймуть до кінця дня та завтра — на основі статистики, патернів, особистого досвіду.',q:'Скільки, найімовірніше, буде — і де ризик промаху'},
-  {n:3,t:'Формування транспортного рішення',d:'Маршрути, формат авто, кругові vs односторонні, цільове завантаження 90–95%, виключення холостого ходу.',q:'Як вивезти все без залишків і не вбити економіку'},
-  {n:4,t:'Перевірка доступності автопарку',d:'Наявність авто потрібних форматів, зобовʼязання перевізників, ризики поломок. Збій = перезбір всієї схеми.',q:'На що реально можна спертися, а що під питанням'},
-  {n:5,t:'Робота з дефіцитом транспорту',d:'Найм додаткового авто vs внутрішнє переміщення, круговий vs односторонній, порівняння по повній вартості.',q:'Що дешевше і надійніше прямо зараз, а не "в ідеалі"'},
-  {n:6,t:'Гнучке резервування і відкладені рішення',d:'Свідомо НЕ ставить частину напрямків на завантаження — лишає простір для маневру, розгалужені маршрути.',q:'Лишити свободу для коригування'},
-  {n:7,t:'Оперативні корекції T-0',d:'Ранковий перерахунок: фактичний вантаж + фактичні авто. Підтвердження або заміна планів дня.',q:'Тепер працюємо за фактом, а не за очікуваннями'},
-  {n:8,t:'Безперервні комунікації',d:'Склад (крихкі, негабарит), регіональні логісти, перевізники, пошук авто, комерція. Десятки розмов на годину.',q:'Я — центр прийняття рішень у живій системі'},
-  {n:9,t:'Облік зворотного потоку',d:'Баланс сьогоднішнього вивозу та завтрашнього повернення вантажів до Києва — мінімізація односторонніх рейсів.',q:'Сьогоднішнє рішення = завтрашня проблема або стабільність'}
-];
-var asisEl=document.getElementById('asis-grid');
-asisEl.innerHTML=asisStages.map(function(s){
-  return '<div class="asis-c"><div class="asis-c-h"><div class="asis-c-n">'+s.n+'</div><div class="asis-c-t">'+s.t+'</div></div><div class="asis-c-d">'+s.d+'</div><div class="asis-c-q">«'+s.q+'»</div></div>';
+    '<div class="ach" style="background:'+s.col+'11"><div class="acn" style="background:'+s.col+'22;color:'+s.col+'">'+s.n+'</div>'+
+    '<div><div class="actag" style="color:'+s.col+'">'+s.tag+'</div><div class="actit">'+s.title+'</div></div></div>'+
+    '<div class="acb"><div class="acpr">'+s.prob+'</div>'+
+    '<div class="acll">Що змінюємо</div>'+
+    s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+
+    coversHtml+
+    '<div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+
+    '</div></div>';
 }).join('');
 
 addEvt('SAT система запущена','ok');
