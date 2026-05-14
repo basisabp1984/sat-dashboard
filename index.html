@@ -114,6 +114,23 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .acmet{margin-top:7px;text-align:center;font-size:10px;font-weight:700;padding:5px;border-radius:6px;background:rgba(0,61,165,0.2);color:#7EC8FF}
 .aftr{text-align:center;padding:20px 16px 40px;border-top:1px solid rgba(245,166,35,0.2);color:rgba(255,255,255,0.35);font-size:12px}
 .aftr strong{color:#F5A623}
+.asis{max-width:920px;margin:0 auto;padding:14px 14px 30px}
+.asis-h{text-align:center;margin-bottom:18px}
+.asis-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#F5A623;background:rgba(245,166,35,0.12);padding:4px 10px;border-radius:20px;margin-bottom:8px}
+.asis-h h2{font-size:clamp(18px,3.5vw,26px);font-weight:800;color:#fff;line-height:1.25}
+.asis-h p{color:rgba(255,255,255,0.45);font-size:12px;line-height:1.5;margin-top:6px;max-width:560px;margin-left:auto;margin-right:auto}
+.asis-role{background:rgba(0,61,165,0.18);border:1px solid rgba(126,200,255,0.25);border-radius:11px;padding:14px 16px;margin-bottom:16px}
+.asis-role b{color:#7EC8FF;font-size:13px}
+.asis-role p{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.55;margin-top:5px}
+.asis-role span{color:#F5A623;font-weight:700}
+.asis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:9px}
+.asis-c{background:rgba(255,255,255,0.04);border:1px solid rgba(245,166,35,0.18);border-radius:10px;padding:11px 13px;transition:border-color 0.2s}
+.asis-c:hover{border-color:rgba(245,166,35,0.45)}
+.asis-c-h{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.asis-c-n{width:24px;height:24px;background:#F5A623;color:#003DA5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.asis-c-t{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.asis-c-d{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.45;margin-bottom:6px}
+.asis-c-q{font-size:11px;color:#F5A623;font-style:italic;line-height:1.4;border-left:2px solid rgba(245,166,35,0.4);padding-left:7px}
 </style></head>
 <body>
 <div id="hdr">
@@ -161,6 +178,18 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
     <p>Від Excel та телефонних дзвінків до живої системи яка знає, бачить і передбачає</p>
   </div>
   <div class="acards" id="acards"></div>
+  <div class="asis">
+    <div class="asis-h">
+      <div class="asis-tag">AS-IS · як працює сьогодні</div>
+      <h2>9 функцій логіста за один цикл</h2>
+      <p>Логіст SAT кожні 30–60 хвилин перезбирає рішення. Це не диспетчер — а планувальник, аналітик і кризис-менеджер в одній особі.</p>
+    </div>
+    <div class="asis-role">
+      <b>Роль логіста</b>
+      <p>Оператор складної ймовірнісної системи, який працює з неповною інформацією і балансує <span>вантаж ↔ транспорт ↔ склад ↔ зобов'язання ↔ гроші ↔ ризики</span>.</p>
+    </div>
+    <div class="asis-grid" id="asis-grid"></div>
+  </div>
   <div class="aftr"><strong>Кожен день Етапу 1 — це дані для чуйки системи на Етапі 3.</strong></div>
 </div>
 <script>
@@ -475,6 +504,24 @@ acEl.innerHTML=stages.map(function(s){return '<div class="ac" style="border:1px 
   s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+
   '<div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+
   '</div></div>';}).join('');
+
+var asisStages=[
+  {n:1,t:'Прогноз гарантованого вантажопотоку (T-1)',d:'Що вже на складі Києва, заявлено клієнтами і гарантовано доїде транзитом по 18–20 напрямках.',q:'Що буде точно, без ілюзій'},
+  {n:2,t:'Прогноз додаткового вантажопотоку',d:'Скільки ще приймуть до кінця дня і завтра — на основі статистики, патернів і досвіду.',q:'Скільки, найімовірніше, буде — і де ризик промаху'},
+  {n:3,t:'Формування транспортного рішення',d:'Маршрути, формати авто, кругові vs односторонні рейси. Цільове завантаження 90–95%.',q:'Як вивезти все без залишків і не вбити економіку'},
+  {n:4,t:'Перевірка доступності автопарку',d:'Наявність авто, зобовʼязання перевізників, обмеження водіїв, ризики поломок. Поломка = перезбір схеми.',q:'На що реально можна спертися, а що під питанням'},
+  {n:5,t:'Робота з дефіцитом транспорту',d:'Найм додаткових авто, порівняння круговий vs односторонній по повній вартості. Резерву нема за визначенням.',q:'Що дешевше і надійніше зараз, а не "в ідеалі"'},
+  {n:6,t:'Гнучке резервування і відкладені рішення',d:'Гарантовані напрямки — на завантаження. Частину свідомо НЕ ставить — лишити простір для маневру.',q:'Лишити свободу для коригування'},
+  {n:7,t:'Оперативні корекції в день відправки (T-0)',d:'Ранковий перерахунок по факту: фактичний вантаж + фактичні авто. Невизначеність знята.',q:'Тепер працюємо за фактом, а не за очікуваннями'},
+  {n:8,t:'Безперервні комунікації',d:'Склад (крихкі, негабарит, щільність), регіони, перевізники, пошук авто, комерція по затримках.',q:'Я — центр прийняття рішень у живій системі'},
+  {n:9,t:'Облік зворотного потоку (наступний день)',d:'Замовлення регіонів на авто з Києва завтра. Баланс сьогоднішнього вивозу і завтрашнього повернення.',q:'Сьогоднішнє рішення = завтрашня проблема або стабільність'}
+];
+var asisEl=document.getElementById('asis-grid');
+asisEl.innerHTML=asisStages.map(function(s){return '<div class="asis-c">'+
+  '<div class="asis-c-h"><div class="asis-c-n">'+s.n+'</div><div class="asis-c-t">'+s.t+'</div></div>'+
+  '<div class="asis-c-d">'+s.d+'</div>'+
+  '<div class="asis-c-q">"'+s.q+'"</div>'+
+  '</div>';}).join('');
 
 addEvt('SAT система запущена','ok');
 setTimeout(function(){addEvt('50 машин на маршрутах','truck');},1500);
