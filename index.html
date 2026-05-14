@@ -162,6 +162,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .dch-x:hover{background:rgba(255,255,255,0.34)}
 .dcb{padding:9px 12px 11px}
 .dch-grip{display:inline-block;color:rgba(255,255,255,0.5);margin-right:4px;font-size:13px}
+.sat-tip{background:rgba(0,30,80,0.95)!important;border:1px solid rgba(245,166,35,0.6)!important;color:#fff!important;font-size:11px!important;font-weight:600!important;padding:4px 8px!important;border-radius:6px!important;box-shadow:0 4px 12px rgba(0,0,0,0.4)!important}
+.sat-tip::before{border-top-color:rgba(245,166,35,0.6)!important}
 </style></head>
 <body>
 <div id="hdr">
@@ -253,6 +255,8 @@ var SD=['ТОВ Техноком','Агро-Союз','МедТех','Промі
 var PB=['Лопнуло колесо','Двигун не заводиться','ДТП — чекаємо ДАІ','Водій захворів'];
 var DL=['Затримка через затори','Об\'їзд через ремонт','Затримка у клієнта'];
 var TCOL={b:'#003DA5',y:'#F5A623',r:'#EF4444'};
+var TCOL_LIGHT={b:'#1B5DD0',y:'#FFC247',r:'#FF7E7E'};
+var TCOL_DARK={b:'#001A4D',y:'#7A4400',r:'#7A1414'};
 var TST={b:'В рейсі',y:'Вільна',r:'Тривога'};
 var TFORMAT={b:['Фура 20т','Фура 22т','Фура 18т'],y:['Фура 20т','5-тонник'],r:['Фура 20т']};
 
@@ -395,8 +399,7 @@ var tMarkers={};
 trucks.forEach(function(t){
   var pos=lerp(KV,CITIES[t.dest],t.prog);
   var m=L.marker(pos,{icon:mkIcon(t.s),zIndexOffset:100}).addTo(map);
-  m.bindPopup(function(){return truckPopupHtml(t);},{closeButton:false,autoPan:false,offset:[0,4],className:'mini-popup'});
-  m.on('mouseover',function(){m.openPopup();});
+  m.bindTooltip(t.plate+' · '+TST[t.s],{direction:'top',offset:[0,-8],className:'sat-tip'});
   m.on('click',function(e){
     if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
     map.closePopup();
@@ -681,8 +684,7 @@ function spawnOne(silent){
   var cd=pk(ia);var r=Math.random();var u=r<0.5?0:r<0.85?1:2;
   var price=[ri(800,3500),ri(2500,6000),ri(9000,18000)][u];
   var m=L.marker(cd.pos,{icon:cgIcon(u,!silent),zIndexOffset:50});
-  m.bindPopup(function(){return cargoPopupHtml(cd.id);},{closeButton:false,autoPan:false,offset:[0,-2],className:'mini-popup'});
-  m.on('mouseover',function(){m.openPopup();});
+  m.bindTooltip(cd.type+' · '+cd.w+'т → '+cd.dest,{direction:'top',offset:[0,-4],className:'sat-tip'});
   m.on('click',function(e){
     if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
     map.closePopup();
@@ -794,7 +796,7 @@ function nextUber(){
     '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:#16A34A;flex-shrink:0"></div><span>🔥 КРИТИЧНО · маржа '+item.cdata.margin+'%</span></div>'+
     '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">✓ Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
   uberWrap.appendChild(card);
-  var timer=setTimeout(function(){dismiss(card);},12000);
+  var timer=setTimeout(function(){dismiss(card);},9000);
   card._tmr=timer;
   document.getElementById('tk'+cid).onclick=function(){
     addEvt('Вантаж з '+item.cdata.nearCity+' взято ('+item.price.toLocaleString()+' грн)','ok');
@@ -845,6 +847,13 @@ setInterval(function(){
   else if(t.s==='y')addEvt(t.plate+' вільна ('+t.load+'% зайнято)','warn');
   else addEvt(t.plate+' → '+t.dest+' ETA '+t.eta,'truck');
 },15000);
+setInterval(function(){
+  if(uberQ.length>1||uberBusy)return;
+  if(!activeCargo.length)return;
+  var ac=pk(activeCargo);
+  spawnUber(ac.data,ac.u,ac.price);
+},10000);
+setTimeout(function(){if(activeCargo.length){var ac=pk(activeCargo);spawnUber(ac.data,ac.u,ac.price);}},2500);
 
 var asisStages=[
   {n:1,t:'Прогноз гарантованого вантажопотоку (T-1)',d:'Аналіз вантажу на складі Києва, заявленого клієнтами, та того що гарантовано доїде з регіонів. Базовий обсяг по 18–20 напрямках.',q:'Що буде точно, без ілюзій'},
