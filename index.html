@@ -201,7 +201,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
   <div class="ltit">Вантажі (коробки)</div>
   <div class="lr"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,193,7,0.35)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="rgba(255,193,7,0.5)"/></svg>Не терміново</div>
   <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="#FFC107"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#FF8F00"/><line x1="6" y1="0" x2="6" y2="12" stroke="#cc7000" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#cc7000" stroke-width="1.2"/></svg>Розглянути</div>
-  <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/><line x1="6" y1="0" x2="6" y2="12" stroke="#00cc00" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#00cc00" stroke-width="1.2"/></svg>🔥 ЗАБЕРИ МЕНЕ!</div>
+  <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/><line x1="6" y1="0" x2="6" y2="12" stroke="#00cc00" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#00cc00" stroke-width="1.2"/></svg>Забери мене!</div>
   <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 3px white)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,255,255,0.3)"/><rect x="0" y="0" width="14" height="3.5" rx="1" fill="rgba(255,255,255,0.7)"/></svg>● Новий вантаж</div>
 </div>
 <div id="archpage">
@@ -276,17 +276,7 @@ function truckSVG(s) {
   var dark=s==='b'?'#002270':s==='y'?'#CC7700':'#CC0000';
   var wc=s==='b'?'rgba(180,215,255,0.9)':s==='y'?'rgba(255,255,200,0.9)':'rgba(255,200,200,0.9)';
   var anim=s==='y'?'animation:yw 2s infinite':s==='r'?'animation:rw 0.9s infinite':'';
-  return '<div style="'+anim+';display:inline-block">'+
-    '<svg viewBox="0 0 54 34" width="54" height="34" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 5px rgba(0,0,0,0.45))">'+
-    '<rect x="1" y="3" width="32" height="21" rx="2" fill="'+col+'"/>'+
-    '<rect x="33" y="8" width="19" height="16" rx="2.5" fill="'+dark+'"/>'+
-    '<rect x="35" y="10" width="13" height="9" rx="1.5" fill="'+wc+'"/>'+
-    '<text x="17" y="17" font-size="7" fill="white" text-anchor="middle" font-weight="900" font-family="Arial,sans-serif" letter-spacing="0.5">SAT</text>'+
-    '<rect x="5" y="24" width="44" height="4" rx="1" fill="'+dark+'"/>'+
-    '<circle cx="13" cy="30" r="4" fill="#1a1a2e"/><circle cx="13" cy="30" r="1.8" fill="#777"/>'+
-    '<circle cx="38" cy="30" r="4" fill="#1a1a2e"/><circle cx="38" cy="30" r="1.8" fill="#777"/>'+
-    '<circle cx="47" cy="30" r="4" fill="#1a1a2e"/><circle cx="47" cy="30" r="1.8" fill="#777"/>'+
-    '</svg></div>';
+  return '<div style="'+anim+';display:inline-block"><svg viewBox="0 0 54 34" width="54" height="34" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 5px rgba(0,0,0,0.45))"><rect x="1" y="3" width="32" height="21" rx="2" fill="'+col+'"/><rect x="33" y="8" width="19" height="16" rx="2.5" fill="'+dark+'"/><rect x="35" y="10" width="13" height="9" rx="1.5" fill="'+wc+'"/><text x="17" y="17" font-size="7" fill="white" text-anchor="middle" font-weight="900" font-family="Arial,sans-serif" letter-spacing="0.5">SAT</text><rect x="5" y="24" width="44" height="4" rx="1" fill="'+dark+'"/><circle cx="13" cy="30" r="4" fill="#1a1a2e"/><circle cx="13" cy="30" r="1.8" fill="#777"/><circle cx="38" cy="30" r="4" fill="#1a1a2e"/><circle cx="38" cy="30" r="1.8" fill="#777"/><circle cx="47" cy="30" r="4" fill="#1a1a2e"/><circle cx="47" cy="30" r="1.8" fill="#777"/></svg></div>';
 }
 
 function boxSVG(sz, u, isNew) {
@@ -298,13 +288,7 @@ function boxSVG(sz, u, isNew) {
   var f=isNew?'rgba(255,255,255,0.3)':fills[u];
   var t=isNew?'rgba(255,255,255,0.7)':tops[u];
   var l=isNew?'rgba(255,255,255,0.5)':lines[u];
-  return '<div style="display:inline-block;'+a+';'+glow+'">'+
-    '<svg viewBox="0 0 14 14" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg">'+
-    '<rect x="0.5" y="4" width="13" height="10" rx="1" fill="'+f+'" stroke="'+t+'" stroke-width="1"/>'+
-    '<rect x="0" y="1.5" width="14" height="3.5" rx="1" fill="'+t+'"/>'+
-    '<line x1="7" y1="1.5" x2="7" y2="14" stroke="'+l+'" stroke-width="1.2"/>'+
-    '<line x1="0" y1="7.5" x2="14" y2="7.5" stroke="'+l+'" stroke-width="1.2"/>'+
-    '</svg></div>';
+  return '<div style="display:inline-block;'+a+';'+glow+'"><svg viewBox="0 0 14 14" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="4" width="13" height="10" rx="1" fill="'+f+'" stroke="'+t+'" stroke-width="1"/><rect x="0" y="1.5" width="14" height="3.5" rx="1" fill="'+t+'"/><line x1="7" y1="1.5" x2="7" y2="14" stroke="'+l+'" stroke-width="1.2"/><line x1="0" y1="7.5" x2="14" y2="7.5" stroke="'+l+'" stroke-width="1.2"/></svg></div>';
 }
 
 function mkIcon(s,match){
@@ -319,19 +303,13 @@ function cgIcon(u,isNew){
 
 function truckTipHtml(t){
   var stCol={b:'#7EC8FF',y:'#FFD700',r:'#FF6B6B'}[t.s];
-  return '<b>'+t.plate+'</b><span class="tt-st" style="background:'+TCOL[t.s]+';color:#fff">'+TST[t.s]+'</span>'+
-    '<br>'+t.driver+
-    '<br>→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+
-    '<br>Завант. '+t.load+'% · '+t.cargo+' '+t.w+'т';
+  return '<b>'+t.plate+'</b><span class="tt-st" style="background:'+TCOL[t.s]+';color:#fff">'+TST[t.s]+'</span><br>'+t.driver+'<br>→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+'<br>Завант. '+t.load+'% · '+t.cargo+' '+t.w+'т';
 }
 
 function cargoTipHtml(cd,u,price){
   var UL=['Не пріоритетно','Варто розглянути','КРИТИЧНО'];
   var UC=['#9CA3AF','#F5A623','#39FF14'];
-  return '<b>'+cd.type+' · '+cd.w+'т</b><span class="tt-st" style="background:'+UC[u]+';color:#003DA5">'+UL[u]+'</span>'+
-    '<br>'+cd.sender+
-    '<br>'+cd.nearCity+' → <span style="color:#FFD700">'+cd.dest+'</span>'+
-    '<br><span style="color:#FFD700;font-weight:700">'+price.toLocaleString()+' грн</span>';
+  return '<b>'+cd.type+' · '+cd.w+'т</b><span class="tt-st" style="background:'+UC[u]+';color:#003DA5">'+UL[u]+'</span><br>'+cd.sender+'<br>'+cd.nearCity+' → <span style="color:#FFD700">'+cd.dest+'</span><br><span style="color:#FFD700;font-weight:700">'+price.toLocaleString()+' грн</span>';
 }
 
 var tMarkers={};
@@ -377,8 +355,8 @@ function clearMatchHighlights(){
 }
 function clearSelection(){
   clearRoute();
-  closePanel(true);
   closeMiniCard();
+  panel.classList.remove('open');
   showAllTrucks();
   clearMatchHighlights();
   selection=null;
@@ -449,14 +427,13 @@ function closeMiniCard(){miniCard.classList.remove('show');}
 
 var panel=document.getElementById('panel');
 function showPanel(html){panel.innerHTML=html;panel.classList.add('open');}
-function closePanel(quiet){panel.classList.remove('open');if(!quiet){clearSelection();}}
+function closePanel(){panel.classList.remove('open');clearSelection();}
 
 function selectTruck(t,m){
   if(selection)clearSelection();
   selection={type:'truck',t:t,m:m};
   hideOtherTrucks(t.id);
-  var ll=m.getLatLng();
-  showRoute(t,ll.lat,ll.lng).then(function(futurePts){
+  showRoute(t,m.getLatLng().lat,m.getLatLng().lng).then(function(futurePts){
     if(!selection||selection.type!=='truck'||selection.t.id!==t.id)return;
     showTruckMiniCard(t,m,futurePts);
   });
@@ -470,24 +447,14 @@ function showTruckMiniCard(t,m,futurePts){
   var near=findNearbyCargos(futurePts,60);
   var nearCnt=near.length;
   var hintHtml=nearCnt>0?'<div class="mc-hint"><b>'+nearCnt+'</b> вантаж'+(nearCnt>1?'ів':'')+' у радіусі 60 км від маршруту. Натисніть «Подробнее» для деталей.</div>':'';
-  var h='<div class="mc-hdr" style="background:'+hg+'">'+
-    '<div class="mc-hdr-row"><div class="mc-tit">'+t.plate+' · '+t.fmt+'</div><div class="mc-bdg">'+sl+'</div></div>'+
-    '<div class="mc-sub">'+t.driver+'</div></div>'+
-    '<div class="mc-body">'+
-    '<div class="mc-row"><span>Маршрут</span><span>'+route+'</span></div>'+
-    '<div class="mc-row"><span>ETA</span><span>'+t.eta+'</span></div>'+
-    '<div class="mc-row"><span>Завантаженість</span><span>'+t.load+'% · вільно '+freeT+'т</span></div>'+
-    '<div class="mc-row"><span>Прибуття вчасно</span><span>'+t.prob+'%</span></div>'+
-    '</div>'+hintHtml+
-    '<div class="mc-btns"><button class="mc-b detail" onclick="openTruckDetail()">Подробнее →</button><button class="mc-b cls" onclick="clearSelection()">Закрити</button></div>';
+  var h='<div class="mc-hdr" style="background:'+hg+'"><div class="mc-hdr-row"><div class="mc-tit">'+t.plate+' · '+t.fmt+'</div><div class="mc-bdg">'+sl+'</div></div><div class="mc-sub">'+t.driver+'</div></div><div class="mc-body"><div class="mc-row"><span>Маршрут</span><span>'+route+'</span></div><div class="mc-row"><span>ETA</span><span>'+t.eta+'</span></div><div class="mc-row"><span>Завантаженість</span><span>'+t.load+'% · вільно '+freeT+'т</span></div><div class="mc-row"><span>Прибуття вчасно</span><span>'+t.prob+'%</span></div></div>'+hintHtml+'<div class="mc-btns"><button class="mc-b detail" onclick="openTruckDetail()">Подробнее →</button><button class="mc-b cls" onclick="clearSelection()">Закрити</button></div>';
   showMiniCard(h);
 }
 
 function openTruckDetail(){
   if(!selection||selection.type!=='truck')return;
   var t=selection.t,m=selection.m;
-  var ll=m.getLatLng();
-  showRoute(t,ll.lat,ll.lng).then(function(futurePts){
+  showRoute(t,m.getLatLng().lat,m.getLatLng().lng).then(function(futurePts){
     var near=findNearbyCargos(futurePts,60);
     renderTruckPanel(t,m,near);
     closeMiniCard();
@@ -510,33 +477,8 @@ function renderTruckPanel(t,m,nearCargos){
     var UL=['Не терм.','Розглянути','КРИТ'];
     return '<div class="pnear-item"><div class="pnear-l"><b>'+x.ac.data.type+' '+x.ac.data.w+'т</b> · '+x.ac.data.nearCity+' → '+x.ac.data.dest+'<br><span style="color:#6b7280;font-size:10px">'+UL[x.ac.u]+' · ~'+Math.round(x.dist)+' км від маршруту</span></div><div class="pnear-r">'+x.ac.price.toLocaleString()+' грн</div></div>';
   }).join('')||'<div style="color:#9ca3af;font-size:11px;padding:6px 0">Поблизу маршруту вільних вантажів зараз нема.</div>';
-  var riskTxt=t.s==='r'?'<b>Поломка</b> — перезбір всієї схеми (Етап 4). Альтернатива: круговий рейс через '+ (t.stop||'найближче місто') +' з підбором аутсорс-авто.':t.s==='y'?'Вільна потужність '+freeT+'т / '+freeV+'м³. Перевірити підбір вантажу на цьому етапі (Етап 5).':'Прогноз вчасно — '+t.prob+'%. На етапі T-0 (ранковий перерахунок) ризик коректується.';
-  var h='<div class="phdr" style="background:'+hg+'">'+
-    '<div><div class="pt">'+t.plate+' · '+t.fmt+'</div><div class="ps">'+t.driver+' · '+t.phone+' · '+t.carrier+'</div></div>'+
-    '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+sl+'</div>'+
-    '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
-    '<div class="pbody">'+
-    '<div class="prow"><span class="plbl">Маршрут</span><span class="pval">'+route+'</span></div>'+
-    '<div class="prow"><span class="plbl">ETA пункту призн.</span><span class="pval">'+t.eta+' · ~'+distApprox+' км</span></div>'+
-    '<div class="prow"><span class="plbl">Накладна</span><span class="pval">'+t.id+'-2026</span></div>'+
-    '</div>'+
-    '<div class="psec"><div class="psec-h">Вантаж та завантаження</div>'+
-    '<div class="prow"><span class="plbl">Тип</span><span class="pval">'+t.cargo+'</span></div>'+
-    '<div class="prow"><span class="plbl">Поточне</span><span class="pval">'+t.w+'т / '+t.v+'м³</span></div>'+
-    '<div class="prow"><span class="plbl">Місткість</span><span class="pval">'+t.capT+'т / '+t.capV+'м³</span></div>'+
-    '<div class="prow"><span class="plbl">Вільно</span><span class="pval" style="color:'+(parseFloat(freeT)>2?'#16A34A':'#6b7280')+'">'+freeT+'т / '+freeV+'м³</span></div></div>'+
-    '<div class="pbar"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:4px"><span>Завантаженість (ціль 90–95%)</span><span>'+t.load+'%</span></div>'+
-    '<div class="pbg"><div class="pbf" style="width:'+t.load+'%;background:'+lc+'"></div></div></div>'+
-    '<div class="psec"><div class="psec-h">Економіка рейсу</div>'+
-    '<div class="prow"><span class="plbl">Тариф</span><span class="pval">'+tariff+' грн/км</span></div>'+
-    '<div class="prow"><span class="plbl">Виручка рейсу</span><span class="pval" style="color:#003DA5">~'+revenue+' грн</span></div>'+
-    '<div class="prow"><span class="plbl">Зворотний потік</span><span class="pval">'+(t.retDay?'<span class="pchip g">є замовлення</span>':'<span class="pchip r">односторонній</span>')+'</span></div></div>'+
-    '<div class="pprob"><div class="pdot" style="background:'+pc+'"></div><span style="font-size:12px">Прибуття вчасно: <strong style="color:'+pc+'">'+t.prob+'%</strong></span></div>'+
-    '<div class="psec"><div class="psec-h">Вантажі поблизу маршруту</div>'+nearHtml+'</div>'+
-    '<div class="psec"><div class="psec-h">Ризики та рекомендації</div><div class="prisk">'+riskTxt+'</div></div>'+
-    (t.s!=='b'?'<div class="palert"><div class="pat">'+(t.s==='r'?'КРИТИЧНО':'ВІЛЬНА — потрібен вантаж')+'</div><div class="pab">'+t.msg+'</div></div>':'')+
-    '<div class="pmsg">'+t.mt+': "'+t.msg+'"</div>'+
-    '<a href="tel:'+t.phone.replace(/\s/g,'')+'" class="pcall">Зателефонувати водію '+t.phone+'</a>';
+  var riskTxt=t.s==='r'?'<b>Поломка</b> — перезбір всієї схеми (Етап 4). Альтернатива: круговий рейс через '+(t.stop||'найближче місто')+' з підбором аутсорс-авто.':t.s==='y'?'Вільна потужність '+freeT+'т / '+freeV+'м³. Перевірити підбір вантажу на цьому етапі (Етап 5).':'Прогноз вчасно — '+t.prob+'%. На етапі T-0 (ранковий перерахунок) ризик коректується.';
+  var h='<div class="phdr" style="background:'+hg+'"><div><div class="pt">'+t.plate+' · '+t.fmt+'</div><div class="ps">'+t.driver+' · '+t.phone+' · '+t.carrier+'</div></div><div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+sl+'</div><button class="pclose" onclick="closePanel()">✕</button></div></div><div class="pbody"><div class="prow"><span class="plbl">Маршрут</span><span class="pval">'+route+'</span></div><div class="prow"><span class="plbl">ETA пункту призн.</span><span class="pval">'+t.eta+' · ~'+distApprox+' км</span></div><div class="prow"><span class="plbl">Накладна</span><span class="pval">'+t.id+'-2026</span></div></div><div class="psec"><div class="psec-h">Вантаж та завантаження</div><div class="prow"><span class="plbl">Тип</span><span class="pval">'+t.cargo+'</span></div><div class="prow"><span class="plbl">Поточне</span><span class="pval">'+t.w+'т / '+t.v+'м³</span></div><div class="prow"><span class="plbl">Місткість</span><span class="pval">'+t.capT+'т / '+t.capV+'м³</span></div><div class="prow"><span class="plbl">Вільно</span><span class="pval" style="color:'+(parseFloat(freeT)>2?'#16A34A':'#6b7280')+'">'+freeT+'т / '+freeV+'м³</span></div></div><div class="pbar"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:4px"><span>Завантаженість (ціль 90–95%)</span><span>'+t.load+'%</span></div><div class="pbg"><div class="pbf" style="width:'+t.load+'%;background:'+lc+'"></div></div></div><div class="psec"><div class="psec-h">Економіка рейсу</div><div class="prow"><span class="plbl">Тариф</span><span class="pval">'+tariff+' грн/км</span></div><div class="prow"><span class="plbl">Виручка рейсу</span><span class="pval" style="color:#003DA5">~'+revenue+' грн</span></div><div class="prow"><span class="plbl">Зворотний потік</span><span class="pval">'+(t.retDay?'<span class="pchip g">є замовлення</span>':'<span class="pchip r">односторонній</span>')+'</span></div></div><div class="pprob"><div class="pdot" style="background:'+pc+'"></div><span style="font-size:12px">Прибуття вчасно: <strong style="color:'+pc+'">'+t.prob+'%</strong></span></div><div class="psec"><div class="psec-h">Вантажі поблизу маршруту</div>'+nearHtml+'</div><div class="psec"><div class="psec-h">Ризики та рекомендації</div><div class="prisk">'+riskTxt+'</div></div>'+(t.s!=='b'?'<div class="palert"><div class="pat">'+(t.s==='r'?'КРИТИЧНО':'ВІЛЬНА — потрібен вантаж')+'</div><div class="pab">'+t.msg+'</div></div>':'')+'<div class="pmsg">'+t.mt+': "'+t.msg+'"</div><a href="tel:'+t.phone.replace(/\s/g,'')+'" class="pcall">Зателефонувати водію '+t.phone+'</a>';
   showPanel(h);
 }
 
@@ -597,7 +539,6 @@ function selectCargo(ac){
   var matches=findCompatibleTrucks(ac);
   matchTruckIds=matches.map(function(x){return x.t.id;});
   matches.forEach(function(x){try{tMarkers[x.t.id].setIcon(mkIcon(x.t.s,true));}catch(e){}});
-  if(matches.length>0)map.panTo(ac.marker.getLatLng(),{animate:true,duration:0.4});
   showCargoMiniCard(ac,matches);
 }
 
@@ -607,16 +548,7 @@ function showCargoMiniCard(ac,matches){
   var d=ac.data;
   var top=matches[0];
   var hintHtml=matches.length>0?'<div class="mc-hint"><b>'+matches.length+'</b> машин'+(matches.length===1?'а':matches.length<5?'и':'')+' можуть забрати (підсвічені синім). Найближча: <b>'+top.t.plate+'</b> за '+top.d+' км.</div>':'<div class="mc-hint">Зараз поруч нема машин SAT з достатнім вільним місцем. Кандидати для аутсорс-фрахту.</div>';
-  var h='<div class="mc-hdr" style="background:'+UG[ac.u]+'">'+
-    '<div class="mc-hdr-row"><div class="mc-tit">Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="mc-bdg">'+UL[ac.u]+'</div></div>'+
-    '<div class="mc-sub">'+d.sender+' · '+d.type+' '+d.w+'т / '+d.vol+'м³</div></div>'+
-    '<div class="mc-body">'+
-    '<div class="mc-row"><span>Напрямок</span><span>'+d.nearCity+' → '+d.dest+'</span></div>'+
-    '<div class="mc-row"><span>Стан</span><span>'+d.ready+'</span></div>'+
-    '<div class="mc-row"><span>До відправки</span><span>'+d.deadlineH+' год</span></div>'+
-    '<div class="mc-row"><span>Ціна</span><span style="color:#003DA5">'+ac.price.toLocaleString()+' грн</span></div>'+
-    '</div>'+hintHtml+
-    '<div class="mc-btns"><button class="mc-b detail" onclick="openCargoDetail()">Подробнее →</button><button class="mc-b cls" onclick="clearSelection()">Закрити</button></div>';
+  var h='<div class="mc-hdr" style="background:'+UG[ac.u]+'"><div class="mc-hdr-row"><div class="mc-tit">Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="mc-bdg">'+UL[ac.u]+'</div></div><div class="mc-sub">'+d.sender+' · '+d.type+' '+d.w+'т / '+d.vol+'м³</div></div><div class="mc-body"><div class="mc-row"><span>Напрямок</span><span>'+d.nearCity+' → '+d.dest+'</span></div><div class="mc-row"><span>Стан</span><span>'+d.ready+'</span></div><div class="mc-row"><span>До відправки</span><span>'+d.deadlineH+' год</span></div><div class="mc-row"><span>Ціна</span><span style="color:#003DA5">'+ac.price.toLocaleString()+' грн</span></div></div>'+hintHtml+'<div class="mc-btns"><button class="mc-b detail" onclick="openCargoDetail()">Подробнее →</button><button class="mc-b cls" onclick="clearSelection()">Закрити</button></div>';
   showMiniCard(h);
 }
 
@@ -640,26 +572,7 @@ function renderCargoPanel(ac,matches){
   var topMargin=matches.length>0?Math.round(ac.price-matches[0].d*32):null;
   var marginColor=topMargin===null?'#9ca3af':topMargin>2000?'#16A34A':topMargin>500?'#D97706':'#DC2626';
   var probTake=ac.u===2?ri(80,95):ac.u===1?ri(55,80):ri(25,55);
-  var h='<div class="phdr" style="background:'+UG[ac.u]+'">'+
-    '<div><div class="pt">Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="ps">'+d.nearCity+' → '+d.dest+' · '+d.type+' '+d.w+'т</div></div>'+
-    '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+UL[ac.u]+'</div>'+
-    '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
-    '<div class="pbody">'+
-    '<div class="prow"><span class="plbl">Відправник</span><span class="pval">'+d.sender+'</span></div>'+
-    '<div class="prow"><span class="plbl">Тип / Вага / Обʼєм</span><span class="pval">'+d.type+' · '+d.w+'т / '+d.vol+'м³</span></div>'+
-    '<div class="prow"><span class="plbl">Напрямок</span><span class="pval">'+d.nearCity+' → '+d.dest+'</span></div>'+
-    '<div class="prow"><span class="plbl">Особливі вимоги</span><span class="pval">'+d.specReq+'</span></div></div>'+
-    '<div class="psec"><div class="psec-h">Готовність та дедлайн</div>'+
-    '<div class="prow"><span class="plbl">Стан</span><span class="pval">'+readyCh+'</span></div>'+
-    '<div class="prow"><span class="plbl">До відправки</span><span class="pval">'+deadlineCh+'</span></div></div>'+
-    '<div class="psec"><div class="psec-h">Машини що можуть забрати (Етап 5)</div>'+compHtml+'</div>'+
-    '<div class="psec"><div class="psec-h">Економіка</div>'+
-    '<div class="prow"><span class="plbl">Ціна вантажу</span><span class="pval" style="color:#003DA5;font-size:14px;font-weight:800">'+ac.price.toLocaleString()+' грн</span></div>'+
-    (topMargin!==null?'<div class="prow"><span class="plbl">Орієнтовна маржа</span><span class="pval" style="color:'+marginColor+'">~'+topMargin.toLocaleString()+' грн</span></div>':'')+
-    '<div class="prow"><span class="plbl">Імов. забору</span><span class="pval">'+probTake+'%</span></div></div>'+
-    '<div style="display:flex;border-top:1px solid #f3f4f6">'+
-    '<button onclick="takeCargo('+ac.id+')" style="flex:1;padding:12px;background:#003DA5;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 0 16px">Взяти вантаж</button>'+
-    '<button onclick="closePanel()" style="flex:1;padding:12px;background:#f3f4f6;color:#6b7280;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 16px 0">Закрити</button></div>';
+  var h='<div class="phdr" style="background:'+UG[ac.u]+'"><div><div class="pt">Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="ps">'+d.nearCity+' → '+d.dest+' · '+d.type+' '+d.w+'т</div></div><div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+UL[ac.u]+'</div><button class="pclose" onclick="closePanel()">✕</button></div></div><div class="pbody"><div class="prow"><span class="plbl">Відправник</span><span class="pval">'+d.sender+'</span></div><div class="prow"><span class="plbl">Тип / Вага / Обʼєм</span><span class="pval">'+d.type+' · '+d.w+'т / '+d.vol+'м³</span></div><div class="prow"><span class="plbl">Напрямок</span><span class="pval">'+d.nearCity+' → '+d.dest+'</span></div><div class="prow"><span class="plbl">Особливі вимоги</span><span class="pval">'+d.specReq+'</span></div></div><div class="psec"><div class="psec-h">Готовність та дедлайн</div><div class="prow"><span class="plbl">Стан</span><span class="pval">'+readyCh+'</span></div><div class="prow"><span class="plbl">До відправки</span><span class="pval">'+deadlineCh+'</span></div></div><div class="psec"><div class="psec-h">Машини що можуть забрати (Етап 5)</div>'+compHtml+'</div><div class="psec"><div class="psec-h">Економіка</div><div class="prow"><span class="plbl">Ціна вантажу</span><span class="pval" style="color:#003DA5;font-size:14px;font-weight:800">'+ac.price.toLocaleString()+' грн</span></div>'+(topMargin!==null?'<div class="prow"><span class="plbl">Орієнтовна маржа</span><span class="pval" style="color:'+marginColor+'">~'+topMargin.toLocaleString()+' грн</span></div>':'')+'<div class="prow"><span class="plbl">Імов. забору</span><span class="pval">'+probTake+'%</span></div></div><div style="display:flex;border-top:1px solid #f3f4f6"><button onclick="takeCargo('+ac.id+')" style="flex:1;padding:12px;background:#003DA5;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 0 16px">Взяти вантаж</button><button onclick="closePanel()" style="flex:1;padding:12px;background:#f3f4f6;color:#6b7280;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 16px 0">Закрити</button></div>';
   showPanel(h);
 }
 
@@ -679,11 +592,7 @@ function nextUber(){
   var UC2=['','','#16A34A'];
   var card=document.createElement('div');card.className='ucard';
   var cid=item.cdata.id;
-  card.innerHTML='<div class="utimer"></div>'+
-    '<div class="uhdr"><div><div class="unew">НОВИЙ ВАНТАЖ SAT</div><div class="utit">'+item.cdata.type+' · '+item.cdata.w+'т</div><div class="usub">'+item.cdata.nearCity+' → '+item.cdata.dest+'</div></div>'+
-    '<div style="text-align:right"><div class="uprice">'+item.price.toLocaleString()+'</div><div class="ulbl">грн</div></div></div>'+
-    '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:'+UC2[item.u]+';flex-shrink:0"></div><span>'+UL2[item.u]+'</span></div>'+
-    '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
+  card.innerHTML='<div class="utimer"></div><div class="uhdr"><div><div class="unew">НОВИЙ ВАНТАЖ SAT</div><div class="utit">'+item.cdata.type+' · '+item.cdata.w+'т</div><div class="usub">'+item.cdata.nearCity+' → '+item.cdata.dest+'</div></div><div style="text-align:right"><div class="uprice">'+item.price.toLocaleString()+'</div><div class="ulbl">грн</div></div></div><div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:'+UC2[item.u]+';flex-shrink:0"></div><span>'+UL2[item.u]+'</span></div><div class="ubtns"><button class="ubtn take" id="tk'+cid+'">Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
   uberWrap.appendChild(card);
   var timer=setTimeout(function(){dismiss(card);},12000);
   card._tmr=timer;
@@ -702,11 +611,10 @@ function dismiss(card){
 }
 
 var evtsEl=document.getElementById('evts');var evtsArr=[];
-var EI={cargo:'·',truck:'·',warn:'·',ok:'·',red:'·'};
 function addEvt(txt,type){
   evtsArr.unshift({txt:txt,type:type,t:ns()});
   if(evtsArr.length>6)evtsArr.pop();
-  evtsEl.innerHTML=evtsArr.map(function(e){return '<div class="ev"><span class="evico">'+(EI[e.type]||'●')+'</span><div><div class="evtxt">'+e.txt+'</div><div class="evt">'+e.t+'</div></div></div>';}).join('');
+  evtsEl.innerHTML=evtsArr.map(function(e){return '<div class="ev"><span class="evico">●</span><div><div class="evtxt">'+e.txt+'</div><div class="evt">'+e.t+'</div></div></div>';}).join('');
 }
 function updateBadge(){
   var b=document.getElementById('nbadge');
@@ -738,53 +646,13 @@ setInterval(function(){
 },15000);
 
 var stages=[
-  {n:1,tag:'Фундамент · Етап 1',title:'Інформаційна основа',col:'#0EA5E9',
-   prob:'Логіст реконструює повну картину кожні <b>30–60 хвилин</b> з обривків інформації: дзвінки водіїв, повідомлення складу, регіональні звіти, заявки клієнтів. Половина даних — у голові логіста або в розмовах, які зникають без сліду.',
-   items:[
-     '<b>Telegram-бот як єдина точка збору</b> від водіїв (стан, поломки, ETA), складу (фактичне завантаження, негабарит), регіональних логістів (що приймається сьогодні), комерції (узгоджені затримки)',
-     '<b>Автоматична структуризація</b> неструктурованих повідомлень: парсинг номера машини, типу події, локації, часу. Все летить у єдину базу',
-     '<b>Живий стан у будь-який момент</b>: де кожна машина, що з кожним напрямком (18–20 шт), скільки гарантованого вантажу на складі, що в транзиті',
-     '<b>Дашборд оновлюється сам</b> — логіст відкрив, побачив реальність, не витрачаючи 40 хвилин на обдзвон'
-   ],
-   funcs:['1','2','7','8'],
-   funcsNote:'Прогноз гарантованого та ймовірнісного вантажопотоку · Оперативні корекції T-0 · Координація учасників',
-   result:'Логіст більше не реконструює картину щогодини — вона є завжди. Звільнений час витрачається на рішення, а не на збір даних.',
-   metric:'~80% поточних інформаційних проблем · Реалізація 6–8 тижнів'},
-  {n:2,tag:'Проактивність · Етап 2',title:'AI-агенти — живе спостереження',col:'#A855F7',
-   prob:'Логіст фізично не може одночасно тримати в увазі 50 машин і 18–20 напрямків. Сигнал «машина застрягла на 40 хв», «вантаж по дорозі», «зворотний рейс під загрозою» — все це він <b>помітить тільки коли встигне глянути</b>. На переключеннях втрачається сума на круговий рейс або фрахт додаткового авто.',
-   items:[
-     '<b>Окремий агент за кожною машиною</b> працює паралельно 24/7 — стежить за ETA, відхиленнями, ризиками поломки, статусом водія',
-     '<b>Машина стоїть 40+ хв не на адресі</b> → автоматичний сигнал логісту з готовою альтернативою (запасне авто, переміщення вантажу)',
-     '<b>Вантаж по дорозі</b> → агент-сваха пропонує машину з підрахунком: відстань-крюк, вільне місце, маржа, ризик зриву основного рейсу',
-     '<b>Дефіцит автопарку</b> на завтра → агент заздалегідь стукає в пошук авто і пропонує круговий vs односторонній з повним порівнянням'
-   ],
-   funcs:['3','4','5','6'],
-   funcsNote:'Транспортні сценарії · Перевірка автопарку · Робота з дефіцитом · Гнучке резервування',
-   result:'Система знаходить — логіст лише підтверджує. Рутинне сканування зникає, фокус на ризикованих рішеннях.',
-   metric:'Захоплення 70–80% попутних вантажів · Скорочення холостого пробігу 15–25%'},
-  {n:3,tag:'Інтелект · Етап 3',title:'Прогнозування та досвід',col:'#F59E0B',
-   prob:'Накопичений роками досвід — «зі Сум зазвичай ще +Х% доїжджає», «у понеділок Полтава дає менше», «після дощу Кременчуг важко» — живе тільки в голові логіста. <b>Захворів — досвід зник.</b> Молодший логіст починає з нуля, бізнес стає вразливим до однієї людини.',
-   items:[
-     '<b>Система навчається на кожному рейсі</b> та рішенні: яка машина, який маршрут, яка погода, який результат',
-     '<b>Прогноз P10/P50/P90</b> по кожному напрямку: «завтра у Львові буде 8–12–15 тонн з ймовірностями». Логіст бачить не одну цифру, а коридор',
-     '<b>Підказки з історії</b>: «у 70% випадків з цього маршруту вдається завантажитись у зворотньому через таке-то місто»',
-     '<b>Баланс T+1</b>: сьогоднішнє рішення оцінюється з прогнозом завтрашніх замовлень регіонів — щоб не лишити Київ без авто на ранок'
-   ],
-   funcs:['2','5','6','9'],
-   funcsNote:'Ймовірнісний прогноз · Економічне порівняння · Управління гнучкістю · Облік зворотного потоку',
-   result:'Передбачає до того як стало проблемою. Досвід працівника стає активом компанії — він живе в системі, а не в одній голові.',
-   metric:'Точність прогнозу ±5–8% на тижневому горизонті · Готовність до зміни логіста за 1 день'}
+  {n:1,tag:'Фундамент · Етап 1',title:'Інформаційна основа',col:'#0EA5E9',prob:'Логіст реконструює повну картину кожні <b>30–60 хвилин</b> з обривків інформації: дзвінки водіїв, повідомлення складу, регіональні звіти, заявки клієнтів. Половина даних — у голові логіста або в розмовах, які зникають без сліду.',items:['<b>Telegram-бот як єдина точка збору</b> від водіїв (стан, поломки, ETA), складу (фактичне завантаження, негабарит), регіональних логістів, комерції','<b>Автоматична структуризація</b> неструктурованих повідомлень: парсинг номера машини, типу події, локації, часу. Все летить у єдину базу','<b>Живий стан у будь-який момент</b>: де кожна машина, що з кожним напрямком (18–20 шт), скільки гарантованого вантажу на складі, що в транзиті','<b>Дашборд оновлюється сам</b> — логіст відкрив, побачив реальність, не витрачаючи 40 хвилин на обдзвон'],funcs:['1','2','7','8'],funcsNote:'Прогноз гарантованого та ймовірнісного вантажопотоку · Оперативні корекції T-0 · Координація учасників',result:'Логіст більше не реконструює картину щогодини — вона є завжди. Звільнений час витрачається на рішення, а не на збір даних.',metric:'~80% поточних інформаційних проблем · Реалізація 6–8 тижнів'},
+  {n:2,tag:'Проактивність · Етап 2',title:'AI-агенти — живе спостереження',col:'#A855F7',prob:'Логіст фізично не може одночасно тримати в увазі 50 машин і 18–20 напрямків. Сигнал «машина застрягла на 40 хв», «вантаж по дорозі», «зворотний рейс під загрозою» — все це він <b>помітить тільки коли встигне глянути</b>. На переключеннях втрачається сума на круговий рейс або фрахт додаткового авто.',items:['<b>Окремий агент за кожною машиною</b> працює паралельно 24/7 — стежить за ETA, відхиленнями, ризиками поломки, статусом водія','<b>Машина стоїть 40+ хв не на адресі</b> → автоматичний сигнал логісту з готовою альтернативою (запасне авто, переміщення вантажу)','<b>Вантаж по дорозі</b> → агент-сваха пропонує машину з підрахунком: відстань-крюк, вільне місце, маржа, ризик зриву основного рейсу','<b>Дефіцит автопарку</b> на завтра → агент заздалегідь стукає в пошук авто і пропонує круговий vs односторонній з повним порівнянням'],funcs:['3','4','5','6'],funcsNote:'Транспортні сценарії · Перевірка автопарку · Робота з дефіцитом · Гнучке резервування',result:'Система знаходить — логіст лише підтверджує. Рутинне сканування зникає, фокус на ризикованих рішеннях.',metric:'Захоплення 70–80% попутних вантажів · Скорочення холостого пробігу 15–25%'},
+  {n:3,tag:'Інтелект · Етап 3',title:'Прогнозування та досвід',col:'#F59E0B',prob:'Накопичений роками досвід — «зі Сум зазвичай ще +Х% доїжджає», «у понеділок Полтава дає менше», «після дощу Кременчуг важко» — живе тільки в голові логіста. <b>Захворів — досвід зник.</b> Молодший логіст починає з нуля, бізнес стає вразливим до однієї людини.',items:['<b>Система навчається на кожному рейсі</b> та рішенні: яка машина, який маршрут, яка погода, який результат','<b>Прогноз P10/P50/P90</b> по кожному напрямку: «завтра у Львові буде 8–12–15 тонн з ймовірностями». Логіст бачить не одну цифру, а коридор','<b>Підказки з історії</b>: «у 70% випадків з цього маршруту вдається завантажитись у зворотньому через таке-то місто»','<b>Баланс T+1</b>: сьогоднішнє рішення оцінюється з прогнозом завтрашніх замовлень регіонів — щоб не лишити Київ без авто на ранок'],funcs:['2','5','6','9'],funcsNote:'Ймовірнісний прогноз · Економічне порівняння · Управління гнучкістю · Облік зворотного потоку',result:'Передбачає до того як стало проблемою. Досвід працівника стає активом компанії — він живе в системі, а не в одній голові.',metric:'Точність прогнозу ±5–8% на тижневому горизонті · Готовність до зміни логіста за 1 день'}
 ];
 var acEl=document.getElementById('acards');
 acEl.innerHTML=stages.map(function(s){
-  return '<div class="ac" style="border:1px solid '+s.col+'33">'+
-  '<div class="ach" style="background:'+s.col+'11"><div class="acn" style="background:'+s.col+'22;color:'+s.col+'">'+s.n+'</div>'+
-  '<div><div class="actag" style="color:'+s.col+'">'+s.tag+'</div><div class="actit">'+s.title+'</div></div></div>'+
-  '<div class="acb"><div class="acpr">'+s.prob+'</div><div class="acll">Що змінюємо</div>'+
-  s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+
-  '<div class="ac-funcs"><div class="ac-funcs-h">Автоматизує функції AS-IS</div><div class="ac-funcs-list">'+s.funcs.map(function(f){return '<span class="ac-funcs-chip">№'+f+'</span>';}).join('')+'</div><div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.45">'+s.funcsNote+'</div></div>'+
-  '<div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+
-  '</div></div>';
+  return '<div class="ac" style="border:1px solid '+s.col+'33"><div class="ach" style="background:'+s.col+'11"><div class="acn" style="background:'+s.col+'22;color:'+s.col+'">'+s.n+'</div><div><div class="actag" style="color:'+s.col+'">'+s.tag+'</div><div class="actit">'+s.title+'</div></div></div><div class="acb"><div class="acpr">'+s.prob+'</div><div class="acll">Що змінюємо</div>'+s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+'<div class="ac-funcs"><div class="ac-funcs-h">Автоматизує функції AS-IS</div><div class="ac-funcs-list">'+s.funcs.map(function(f){return '<span class="ac-funcs-chip">№'+f+'</span>';}).join('')+'</div><div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.45">'+s.funcsNote+'</div></div><div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+'</div></div>';
 }).join('');
 
 var asisStages=[
