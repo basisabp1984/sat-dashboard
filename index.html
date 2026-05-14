@@ -401,10 +401,10 @@ var tMarkers={};
 trucks.forEach(function(t){
   var pos=lerp(KV,CITIES[t.dest],t.prog);
   var m=L.marker(pos,{icon:mkIcon(t.s),zIndexOffset:100}).addTo(map);
-  m.bindTooltip(t.plate+' · '+TST[t.s],{direction:'top',offset:[0,-8],className:'sat-tip'});
+  m.bindPopup(function(){return truckPopupHtml(t);},{closeButton:false,autoPan:false,offset:[0,4],className:'mini-popup'});
+  m.on('mouseover',function(){m.openPopup();});
   m.on('click',function(e){
     if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
-    map.closePopup();
     restoreAllTrucks();
     showTruckRoute(t,m);
     showDCard('Машина '+t.plate,truckDCardHtml(t));
@@ -686,10 +686,10 @@ function spawnOne(silent){
   var cd=pk(ia);var r=Math.random();var u=r<0.5?0:r<0.85?1:2;
   var price=[ri(800,3500),ri(2500,6000),ri(9000,18000)][u];
   var m=L.marker(cd.pos,{icon:cgIcon(u,!silent),zIndexOffset:50});
-  m.bindTooltip(cd.type+' · '+cd.w+'т → '+cd.dest,{direction:'top',offset:[0,-4],className:'sat-tip'});
+  m.bindPopup(function(){return cargoPopupHtml(cd.id);},{closeButton:false,autoPan:false,offset:[0,-2],className:'mini-popup'});
+  m.on('mouseover',function(){m.openPopup();});
   m.on('click',function(e){
     if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
-    map.closePopup();
     clearRoute();
     hideNonCompatibleTrucks(cd.pos);
     var found=highlightYellowTrucksNear(cd);
