@@ -1,0 +1,448 @@
+<!DOCTYPE html><html lang="uk"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SAT — Логістика для бізнесу</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
+#map{position:fixed;top:58px;left:0;right:0;bottom:0;z-index:1}
+.leaflet-tile-pane{filter:saturate(0.8) brightness(1.05)}
+#hdr{position:fixed;top:0;left:0;right:0;height:58px;z-index:1000;
+  background:#003DA5;border-bottom:3px solid #F5A623;
+  display:flex;align-items:center;padding:0 12px;gap:10px}
+.sat-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+.sat-s{width:36px;height:36px;background:#F5A623;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#003DA5;font-family:Arial,sans-serif;flex-shrink:0}
+.sat-text{display:flex;flex-direction:column;line-height:1}
+.sat-name{font-size:15px;font-weight:900;color:#fff;letter-spacing:0.5px}
+.sat-sub{font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px}
+.stats{display:flex;gap:3px;flex:1;justify-content:center}
+.st{display:flex;flex-direction:column;align-items:center;padding:3px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);min-width:52px}
+.sv{font-family:monospace;font-size:16px;font-weight:700;line-height:1.1}
+.sv.b{color:#7EC8FF}.sv.y{color:#FFD700}.sv.r{color:#FF6B6B}.sv.g{color:#90EE90}
+.sl{font-size:8px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.3px;margin-top:1px}
+.hright{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#nbadge{display:none;background:#F5A623;color:#003DA5;border-radius:20px;font-size:9px;font-weight:700;padding:2px 7px}
+#archbtn{background:#F5A623;color:#003DA5;border:none;padding:6px 11px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700}
+#archbtn:hover{background:#FFD700}
+.leaflet-popup-content-wrapper{border-radius:14px!important;box-shadow:0 10px 36px rgba(0,0,0,0.4)!important;padding:0!important;border:none!important;overflow:hidden}
+.leaflet-popup-content{margin:0!important;min-width:255px!important}
+.leaflet-popup-tip-container{display:none}
+.leaflet-popup-close-button{color:rgba(255,255,255,0.8)!important;top:9px!important;right:11px!important;font-size:17px!important;z-index:10}
+.cg-new{animation:ping 0.7s infinite}
+@keyframes ping{0%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(255,255,255,0.9))}70%{transform:scale(1.5);filter:drop-shadow(0 0 8px rgba(255,255,255,0.8))}100%{transform:scale(1)}}
+@keyframes yw{0%,100%{filter:drop-shadow(0 0 3px rgba(245,166,35,0.8))}50%{filter:drop-shadow(0 0 10px rgba(245,166,35,1))}}
+@keyframes rw{0%,100%{filter:drop-shadow(0 0 3px rgba(239,68,68,0.8))}50%{filter:drop-shadow(0 0 12px rgba(239,68,68,1))}}
+@keyframes neon{0%,100%{filter:drop-shadow(0 0 4px #39FF14)}50%{filter:drop-shadow(0 0 14px #39FF14)}}
+#panel{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.4);z-index:500;max-height:80%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1)}
+#panel.open{transform:translateY(0)}
+.phdr{padding:12px 14px;display:flex;align-items:flex-start;justify-content:space-between}
+.pt{font-size:14px;font-weight:700;color:#fff}.ps{font-size:11px;color:rgba(255,255,255,0.8);margin-top:2px}
+.pbadge{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,0.2);color:#fff;font-weight:600}
+.pclose{background:rgba(255,255,255,0.22);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;line-height:26px;text-align:center}
+.pbody{padding:10px 14px}
+.prow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:12px}
+.prow:last-child{border:none}
+.plbl{color:#6b7280}.pval{font-weight:600;color:#111;text-align:right}
+.pbar{padding:7px 14px 8px}
+.pbg{height:6px;background:#e5e7eb;border-radius:3px}
+.pbf{height:100%;border-radius:3px}
+.pprob{padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:12px;border-top:1px solid #f3f4f6}
+.pdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.palert{padding:8px 14px;background:#FFF7ED;border-top:1px solid #FED7AA}
+.pat{font-size:11px;font-weight:700;color:#C2410C;margin-bottom:2px}
+.pab{font-size:11px;color:#9A3412}
+.pmsg{padding:6px 14px;background:#F9FAFB;border-top:1px solid #f3f4f6;font-size:10px;color:#6b7280;font-style:italic}
+.pcall{display:block;padding:11px;background:#003DA5;color:#fff;text-align:center;font-size:12px;font-weight:700;text-decoration:none}
+.pcall:hover{background:#002880}
+#uberwrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;align-items:center;gap:8px;width:min(300px,92vw);pointer-events:none}
+.ucard{width:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,0.55);pointer-events:all;animation:sUp 0.45s cubic-bezier(0.34,1.56,0.64,1)}
+.ucard.out{animation:sDn 0.28s ease forwards}
+@keyframes sUp{from{transform:translateY(130%);opacity:0}to{transform:none;opacity:1}}
+@keyframes sDn{to{transform:translateY(130%);opacity:0}}
+.utimer{height:3px;background:linear-gradient(90deg,#003DA5,#F5A623);transform-origin:left;animation:shrink 12s linear forwards}
+@keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.uhdr{padding:10px 12px 6px;display:flex;justify-content:space-between;align-items:flex-start}
+.unew{display:inline-block;background:#003DA5;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-bottom:4px}
+.utit{font-size:14px;font-weight:700;color:#111}
+.usub{font-size:11px;color:#6b7280;margin-top:1px}
+.uprice{font-size:19px;font-weight:800;color:#003DA5}
+.ulbl{font-size:9px;color:#9ca3af;text-align:right}
+.uurg{padding:0 12px 8px;display:flex;align-items:center;gap:7px;font-size:11px;color:#374151}
+.ubtns{display:flex;border-top:1px solid #f3f4f6}
+.ubtn{flex:1;padding:11px;border:none;font-size:13px;font-weight:700;cursor:pointer}
+.ubtn.take{background:#003DA5;color:#fff;border-radius:0 0 0 14px}
+.ubtn.take:hover{background:#002880}
+.ubtn.skip{background:#f3f4f6;color:#6b7280;border-radius:0 0 14px 0}
+#evts{position:fixed;bottom:20px;left:10px;z-index:400;width:min(190px,43vw);background:rgba(0,45,120,0.93);border:1px solid rgba(245,166,35,0.3);border-radius:10px;overflow:hidden}
+.ev{display:flex;align-items:flex-start;gap:5px;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.06);animation:fein 0.3s ease}
+.ev:last-child{border:none}
+@keyframes fein{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.evico{font-size:11px;flex-shrink:0}
+.evtxt{font-size:10px;color:rgba(255,255,255,0.72);line-height:1.3}
+.evt{font-size:8px;color:rgba(255,255,255,0.35);margin-top:1px}
+#legend{position:fixed;bottom:20px;right:10px;z-index:400;background:rgba(0,45,120,0.93);border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:8px 10px;width:min(155px,40vw)}
+.ltit{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:rgba(255,255,255,0.4);margin-bottom:5px}
+.lr{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:10px;color:rgba(255,255,255,0.65)}
+.lr:last-child{margin:0}
+.lsep{height:1px;background:rgba(245,166,35,0.3);margin:5px 0}
+#archpage{position:fixed;inset:0;background:#060B1A;z-index:2000;overflow-y:auto;display:none}
+.anav{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #F5A623;position:sticky;top:0;background:#003DA5;z-index:10}
+.alogo{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.alogo-s{width:30px;height:30px;background:#F5A623;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#003DA5}
+.aback{background:#F5A623;color:#003DA5;border:none;padding:6px 13px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:700}
+.ahero{text-align:center;padding:32px 16px 20px}
+.ahero h1{font-size:clamp(20px,5vw,36px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px}
+.ahspan{color:#F5A623}
+.ahero p{color:rgba(255,255,255,0.45);font-size:13px;line-height:1.6}
+.acards{max-width:680px;margin:0 auto;padding:0 14px 48px;display:flex;flex-direction:column;gap:14px}
+.ac{border-radius:13px;overflow:hidden}
+.ach{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.acn{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
+.actag{font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px}
+.actit{font-size:16px;font-weight:800;color:#fff}
+.acb{padding:13px 16px}
+.acpr{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:11px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:7px;border-left:3px solid rgba(245,166,35,0.4)}
+.acll{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:rgba(255,255,255,0.28);margin-bottom:8px}
+.aci{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px;font-size:12px;color:rgba(255,255,255,0.68);line-height:1.45}
+.acd{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0;background:#F5A623}
+.acres{margin-top:11px;padding:8px 13px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(245,166,35,0.12);color:#F5A623}
+.acmet{margin-top:7px;text-align:center;font-size:10px;font-weight:700;padding:5px;border-radius:6px;background:rgba(0,61,165,0.2);color:#7EC8FF}
+.aftr{text-align:center;padding:20px 16px 40px;border-top:1px solid rgba(245,166,35,0.2);color:rgba(255,255,255,0.35);font-size:12px}
+.aftr strong{color:#F5A623}
+</style></head>
+<body>
+<div id="hdr">
+  <div class="sat-logo">
+    <div class="sat-s">S</div>
+    <div class="sat-text">
+      <span class="sat-name">SAT</span>
+      <span class="sat-sub">Логістика для бізнесу</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="st"><div class="sv b" id="cn-b">—</div><div class="sl">Рейси</div></div>
+    <div class="st"><div class="sv y" id="cn-y">—</div><div class="sl">Вільні</div></div>
+    <div class="st"><div class="sv r" id="cn-r">—</div><div class="sl">Тривоги</div></div>
+    <div class="st"><div class="sv g" id="cn-c">—</div><div class="sl">Вантажі</div></div>
+  </div>
+  <div class="hright">
+    <div id="nbadge">● 0 нових</div>
+    <button id="archbtn" onclick="document.getElementById('archpage').style.display='block'">Про систему →</button>
+  </div>
+</div>
+<div id="map"></div>
+<div id="panel"></div>
+<div id="uberwrap"></div>
+<div id="evts"></div>
+<div id="legend">
+  <div class="ltit">Вантажівки SAT</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#003DA5"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#002270"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>В рейсі — норм.</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#F5A623"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC7700"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Жовта — вільна</div>
+  <div class="lr"><svg width="14" height="9" viewBox="0 0 14 9"><rect x="0" y="0" width="9" height="7" rx="1" fill="#EF4444"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#CC0000"/><circle cx="3" cy="8" r="1.5" fill="#333"/><circle cx="11" cy="8" r="1.5" fill="#333"/></svg>Червона — крит.</div>
+  <div class="lsep"></div>
+  <div class="ltit">Вантажі (коробки)</div>
+  <div class="lr"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,193,7,0.35)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="rgba(255,193,7,0.5)"/></svg>Не терміново</div>
+  <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="#FFC107"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#FF8F00"/><line x1="6" y1="0" x2="6" y2="12" stroke="#cc7000" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#cc7000" stroke-width="1.2"/></svg>Розглянути</div>
+  <div class="lr"><svg width="16" height="16" viewBox="0 0 12 12"><rect x="0" y="3" width="12" height="9" rx="1" fill="#FF8C00"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#E65100"/><line x1="6" y1="0" x2="6" y2="12" stroke="#cc4400" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#cc4400" stroke-width="1.2"/></svg>Термінова подача</div>
+  <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/><line x1="6" y1="0" x2="6" y2="12" stroke="#00cc00" stroke-width="1.2"/><line x1="0" y1="5.5" x2="12" y2="5.5" stroke="#00cc00" stroke-width="1.2"/></svg>🔥 ЗАБЕРИ МЕНЕ!</div>
+  <div class="lr"><svg width="14" height="14" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 3px white)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(255,255,255,0.3)"/><rect x="0" y="0" width="14" height="3.5" rx="1" fill="rgba(255,255,255,0.7)"/></svg>● Новий вантаж</div>
+</div>
+<div id="archpage">
+  <nav class="anav">
+    <div class="alogo"><div class="alogo-s">S</div><span>SAT — Система управління</span></div>
+    <button class="aback" onclick="document.getElementById('archpage').style.display='none'">← Карта</button>
+  </nav>
+  <div class="ahero">
+    <h1>Три етапи<br><span class="ahspan">трансформації логістики SAT</span></h1>
+    <p>Від Excel та телефонних дзвінків до живої системи яка знає, бачить і передбачає</p>
+  </div>
+  <div class="acards" id="acards"></div>
+  <div class="aftr"><strong>Кожен день Етапу 1 — це дані для чуйки системи на Етапі 3.</strong></div>
+</div>
+<script>
+var KV=[50.4501,30.5234];
+var CITIES={'Харків':[49.9935,36.2304],'Дніпро':[48.4647,35.0462],'Одеса':[46.4825,30.7233],'Львів':[49.8397,24.0297],'Запоріжжя':[47.8388,35.1396],'Полтава':[49.5883,34.5514],'Вінниця':[49.2328,28.4682],'Черкаси':[49.4444,32.0598],'Кременчук':[49.0651,33.4198],'Миколаїв':[46.9750,31.9946],'Житомир':[50.2547,28.6587],'Суми':[50.9077,34.7981],'Чернігів':[51.4982,31.2893],'Кропивницький':[48.5079,32.2623],'Херсон':[46.6354,32.6169],'Тернопіль':[49.5535,25.5948],'Рівне':[50.6197,26.2516],'Луцьк':[50.7472,25.3254]};
+var CNAMES=Object.keys(CITIES);
+var STOPS={Харків:'Полтава',Запоріжжя:'Дніпро',Одеса:'Кропивницький',Херсон:'Миколаїв'};
+var CTYPES=['Збірний','Паллети','Крихкий','Негабарит'];
+var NM=['Сергій Коваленко','Василь Петренко','Микола Бондаренко','Олег Савченко','Іван Мельник','Тарас Кравченко','Андрій Поліщук','Юрій Лисенко','Павло Гриценко','Олексій Романюк','Богдан Ткаченко','Владислав Марченко','Артем Сидоренко','Руслан Пономаренко','Максим Степаненко','Віктор Захаренко','Денис Зінченко','Ігор Остапенко','Петро Шевченко','Роман Ковальчук','Олександр Дмитренко','Михайло Олійник','Федір Терещенко','Степан Іваненко','Григорій Гончаренко','Остап Шульга','Ярослав Нечипоренко','Анатолій Білик','Сергій Литвиненко','Василь Мороз','Микола Гладченко','Олег Тимченко','Іван Хоменко','Тарас Панченко','Андрій Власенко','Юрій Науменко','Павло Чорненко','Олексій Тищенко','Богдан Павленко','Дмитро Клименко','Руслан Ярошенко','Максим Федоренко','Ігор Лещенко','Петро Проценко','Роман Зубченко','Олександр Корнієнко','Михайло Данченко','Федір Горбаченко','Анатолій Піщаленко','Василь Коломієць'];
+var SD=['ТОВ Техноком','Агро-Союз','МедТех','Промімпорт','АгроТрейд','БудМатеріали','ФОП Ковальчук','ТОВ Агровест'];
+var PB=['Лопнуло колесо','Двигун не заводиться','ДТП - чекаємо ДАІ','Водій захворів'];
+var DL=['Затримка через затори','Обїзд через ремонт','Затримка у клієнта'];
+var TCOL={b:'#003DA5',y:'#F5A623',r:'#EF4444'};
+function ri(a,b){return Math.floor(a+Math.random()*(b-a+1));}
+function pk(a){return a[Math.floor(Math.random()*a.length)];}
+function lerp(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];}
+function gPl(){var L='АВЕКІМНОРСТУХ';function r(){return L[ri(0,L.length-1)];}return r()+r()+' '+ri(1000,9999)+' '+r()+r();}
+function ns(){return new Date().toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'});}
+
+var map=L.map('map',{zoomControl:false}).setView([49.0,31.5],6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
+L.control.zoom({position:'bottomright'}).addTo(map);
+
+var DIST={Харків:4,Дніпро:4,Одеса:3,Запоріжжя:3,Миколаїв:3,Полтава:3,Черкаси:3,Кременчук:2,Вінниця:3,Херсон:2,Кропивницький:2,Житомир:3,Суми:2,Чернігів:2,Тернопіль:2,Рівне:2,Луцьк:2,Львів:3};
+var trucks=[];var tid=0;
+Object.keys(DIST).forEach(function(dest){
+  var n=DIST[dest];
+  for(var i=0;i<n&&tid<50;i++,tid++){
+    var r=Math.random();var s=r<0.58?'b':r<0.85?'y':'r';
+    var load=s==='b'?ri(75,99):s==='y'?ri(12,48):ri(20,72);
+    trucks.push({id:'T'+('000'+(tid+1)).slice(-3),plate:gPl(),driver:NM[tid]||'Водій '+tid,phone:'+380 9'+ri(0,9)+' '+ri(100,999)+' '+ri(1000,9999),dest:dest,stop:STOPS[dest]||null,prog:0.05+Math.random()*0.82,spd:0.0008+Math.random()*0.0008,s:s,load:load,prob:s==='b'?ri(83,99):s==='y'?ri(68,88):ri(18,52),cargo:pk(CTYPES),w:(4+Math.random()*18).toFixed(1),v:ri(15,78),eta:ri(17,22)+':'+['00','15','30','45'][ri(0,3)],msg:s==='r'?pk(PB):s==='y'?pk(DL):'На маршруті, все добре',mt:ri(13,15)+':'+['00','15','30','45'][ri(0,3)]});
+  }
+});
+
+function truckSVG(s) {
+  var col=TCOL[s];
+  var dark=s==='b'?'#002270':s==='y'?'#CC7700':'#CC0000';
+  var wc=s==='b'?'rgba(180,215,255,0.9)':s==='y'?'rgba(255,255,200,0.9)':'rgba(255,200,200,0.9)';
+  var anim=s==='y'?'animation:yw 2s infinite':s==='r'?'animation:rw 0.9s infinite':'';
+  return '<div style="'+anim+';display:inline-block">'+
+    '<svg viewBox="0 0 54 34" width="54" height="34" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 5px rgba(0,0,0,0.45))">'+
+    '<rect x="1" y="3" width="32" height="21" rx="2" fill="'+col+'"/>'+
+    '<rect x="33" y="8" width="19" height="16" rx="2.5" fill="'+dark+'"/>'+
+    '<rect x="35" y="10" width="13" height="9" rx="1.5" fill="'+wc+'"/>'+
+    '<text x="17" y="17" font-size="7" fill="white" text-anchor="middle" font-weight="900" font-family="Arial,sans-serif" letter-spacing="0.5">SAT</text>'+
+    '<rect x="5" y="24" width="44" height="4" rx="1" fill="'+dark+'"/>'+
+    '<circle cx="13" cy="30" r="4" fill="#1a1a2e"/><circle cx="13" cy="30" r="1.8" fill="#777"/>'+
+    '<circle cx="38" cy="30" r="4" fill="#1a1a2e"/><circle cx="38" cy="30" r="1.8" fill="#777"/>'+
+    '<circle cx="47" cy="30" r="4" fill="#1a1a2e"/><circle cx="47" cy="30" r="1.8" fill="#777"/>'+
+    '</svg></div>';
+}
+
+function boxSVG(sz, u, isNew) {
+  var fills=['rgba(255,220,100,0.35)','#FFC107','#FF8C00','rgba(57,255,20,0.3)'];
+  var tops=['rgba(255,180,0,0.5)','#FF8F00','#E65100','#39FF14'];
+  var lines=['rgba(180,120,0,0.4)','#cc7000','#cc4400','#00cc00'];
+  var glow=u===3?'filter:drop-shadow(0 0 6px #39FF14)':'';
+  var a=isNew?'animation:ping 0.7s infinite':'';
+  var f=isNew?'rgba(255,255,255,0.3)':fills[u];
+  var t=isNew?'rgba(255,255,255,0.7)':tops[u];
+  var l=isNew?'rgba(255,255,255,0.5)':lines[u];
+  return '<div style="display:inline-block;'+a+';'+glow+'">'+
+    '<svg viewBox="0 0 14 14" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg">'+
+    '<rect x="0.5" y="4" width="13" height="10" rx="1" fill="'+f+'" stroke="'+t+'" stroke-width="1"/>'+
+    '<rect x="0" y="1.5" width="14" height="3.5" rx="1" fill="'+t+'"/>'+
+    '<line x1="7" y1="1.5" x2="7" y2="14" stroke="'+l+'" stroke-width="1.2"/>'+
+    '<line x1="0" y1="7.5" x2="14" y2="7.5" stroke="'+l+'" stroke-width="1.2"/>'+
+    '</svg></div>';
+}
+
+function mkIcon(s){
+  return L.divIcon({html:truckSVG(s),className:'',iconSize:[54,34],iconAnchor:[27,34],popupAnchor:[0,-36]});
+}
+function cgIcon(u,isNew){
+  var sz=isNew?18:[12,15,17,19][u];
+  return L.divIcon({html:boxSVG(sz,u,isNew),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2-2]});
+}
+
+var tMarkers={};
+trucks.forEach(function(t){
+  var pos=lerp(KV,CITIES[t.dest],t.prog);
+  var m=L.marker(pos,{icon:mkIcon(t.s),zIndexOffset:100}).addTo(map);
+  m.on('click',function(){openTruck(t,m);});
+  tMarkers[t.id]=m;
+});
+
+setInterval(function(){
+  trucks.forEach(function(t){
+    t.prog+=t.spd+(Math.random()-0.5)*0.0003;
+    if(t.prog>0.96)t.prog=0.05;
+    if(tMarkers[t.id])tMarkers[t.id].setLatLng(lerp(KV,CITIES[t.dest],t.prog));
+  });
+},2000);
+
+var routeLayer=null;
+function clearRoute(){if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}}
+
+function showRoute(t,mlat,mlng){
+  clearRoute();
+  var dest=CITIES[t.dest];if(!dest)return;
+  var col=TCOL[t.s];var mpos=[mlat,mlng];
+  var layers=[];
+  layers.push(L.polyline([KV,mpos],{color:col,weight:5,opacity:0.9,lineCap:'round',lineJoin:'round'}));
+  var spos=t.stop&&CITIES[t.stop]?CITIES[t.stop]:null;
+  if(spos){
+    layers.push(L.polyline([mpos,spos,dest],{color:col,weight:3,opacity:0.5,dashArray:'10 6',lineCap:'round'}));
+    layers.push(L.circleMarker(spos,{radius:6,color:col,fillColor:'#fff',fillOpacity:1,weight:2.5}));
+    layers.push(L.marker(spos,{icon:L.divIcon({html:'<div style="background:'+col+';color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;margin-top:2px;box-shadow:0 1px 4px rgba(0,0,0,0.3)">'+t.stop+'</div>',className:'',iconAnchor:[0,0]})}));
+  }else{
+    layers.push(L.polyline([mpos,dest],{color:col,weight:3,opacity:0.5,dashArray:'10 6',lineCap:'round'}));
+  }
+  layers.push(L.circleMarker(KV,{radius:7,color:'#F5A623',fillColor:'#F5A623',fillOpacity:1,weight:2}));
+  layers.push(L.marker(KV,{icon:L.divIcon({html:'<div style="background:#003DA5;color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-top:2px;border:1px solid #F5A623">Київ</div>',className:'',iconAnchor:[0,0]})}));
+  layers.push(L.circleMarker(dest,{radius:8,color:col,fillColor:'#fff',fillOpacity:1,weight:3}));
+  layers.push(L.marker(dest,{icon:L.divIcon({html:'<div style="background:'+col+';color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;margin-top:2px;box-shadow:0 1px 4px rgba(0,0,0,0.3)">'+t.dest+'</div>',className:'',iconAnchor:[0,0]})}));
+  routeLayer=L.layerGroup(layers).addTo(map);
+  var pts=spos?[KV,mpos,spos,dest]:[KV,mpos,dest];
+  map.fitBounds(L.latLngBounds(pts),{padding:[80,80]});
+}
+
+map.on('click',function(){clearRoute();closePanel();});
+
+var panel=document.getElementById('panel');
+function showPanel(html){panel.innerHTML=html;panel.classList.add('open');}
+function closePanel(){panel.classList.remove('open');clearRoute();}
+
+function openTruck(t,m){
+  var ll=m.getLatLng();
+  showRoute(t,ll.lat,ll.lng);
+  var col=TCOL[t.s];
+  var sl={b:'✅ В рейсі',y:'⚠️ Вільна/Недозавант.',r:'🚨 Критична ситуація'}[t.s];
+  var hg={b:'linear-gradient(135deg,#002270,#003DA5)',y:'linear-gradient(135deg,#CC7700,#F5A623)',r:'linear-gradient(135deg,#7F1D1D,#EF4444)'}[t.s];
+  var pc=t.prob>=83?'#16A34A':t.prob>=65?'#D97706':'#DC2626';
+  var lc=t.load>=80?'#16A34A':t.load>=55?'#D97706':'#DC2626';
+  var route=t.stop?'Київ → '+t.stop+' → '+t.dest:'Київ → '+t.dest;
+  var h='<div class="phdr" style="background:'+hg+'">'+
+    '<div><div class="pt">🚛 '+t.plate+'</div><div class="ps">'+t.driver+' · '+t.phone+'</div></div>'+
+    '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+sl+'</div>'+
+    '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
+    '<div class="pbody">'+
+    '<div class="prow"><span class="plbl">Маршрут</span><span class="pval">'+route+'</span></div>'+
+    '<div class="prow"><span class="plbl">Вантаж</span><span class="pval">'+t.cargo+' · '+t.w+'т / '+t.v+'м³</span></div>'+
+    '<div class="prow"><span class="plbl">ETA</span><span class="pval">'+t.eta+'</span></div>'+
+    '<div class="prow"><span class="plbl">Накладна</span><span class="pval">'+t.id+'-2024</span></div>'+
+    '</div><div class="pbar"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:4px"><span>Завантаженість</span><span>'+t.load+'%</span></div>'+
+    '<div class="pbg"><div class="pbf" style="width:'+t.load+'%;background:'+lc+'"></div></div></div>'+
+    '<div class="pprob"><div class="pdot" style="background:'+pc+'"></div><span style="font-size:12px">Прибуття вчасно: <strong style="color:'+pc+'">'+t.prob+'%</strong></span></div>'+
+    (t.s!=='b'?'<div class="palert"><div class="pat">'+(t.s==='r'?'🚨 КРИТИЧНО':'⚠️ ВІЛЬНА — потрібен вантаж')+'</div><div class="pab">'+t.msg+'</div></div>':'')+
+    '<div class="pmsg">💬 '+t.mt+': "'+t.msg+'"</div>'+
+    '<a href="tel:'+t.phone.replace(/\s/g,'')+'" class="pcall">📞 Зателефонувати водію '+t.phone+'</a>';
+  showPanel(h);
+}
+
+var pool=[];
+for(var pi=0;pi<200;pi++){var cn=pk(CNAMES);var cc=CITIES[cn];pool.push({id:pi,nearCity:cn,pos:[Math.max(44.5,Math.min(52.2,cc[0]+(Math.random()-0.5)*1.8)),Math.max(22.5,Math.min(39.8,cc[1]+(Math.random()-0.5)*2.2))],w:(0.5+Math.random()*15).toFixed(1),type:pk(CTYPES),sender:pk(SD),dest:pk(CNAMES),maxAge:ri(20,100)});}
+
+var activeCargo=[];var newUnread=0;
+
+function spawnOne(){
+  var ia=pool.filter(function(c){return !activeCargo.find(function(a){return a.id===c.id;});});
+  if(!ia.length||activeCargo.length>=42)return;
+  var cd=pk(ia);var r=Math.random();var u=r<0.35?0:r<0.6?1:r<0.82?2:3;
+  var price=[ri(800,3500),ri(2500,6000),ri(5000,10000),ri(9000,18000)][u];
+  var m=L.marker(cd.pos,{icon:cgIcon(u,true),zIndexOffset:50}).addTo(map);
+  m.on('click',function(){openCargo(cd.id);});
+  activeCargo.push({id:cd.id,data:cd,marker:m,u:u,isNew:true,age:0,price:price});
+  newUnread++;updateBadge();addEvt('Новий вантаж — '+cd.nearCity+': '+cd.w+'т '+cd.type,'cargo');
+  if(u>=1)spawnUber(cd,u,price);
+  setTimeout(function(){var ac=activeCargo.find(function(a){return a.id===cd.id;});if(ac&&ac.isNew){ac.isNew=false;ac.marker.setIcon(cgIcon(ac.u,false));}},10000);
+}
+
+function despawn(id){
+  var ac=activeCargo.find(function(a){return a.id===id;});
+  if(!ac)return;
+  try{map.removeLayer(ac.marker);}catch(e){}
+  activeCargo=activeCargo.filter(function(a){return a.id!==id;});
+}
+
+function openCargo(id){
+  var ac=activeCargo.find(function(a){return a.id===id;});if(!ac)return;
+  if(ac.isNew){ac.isNew=false;ac.marker.setIcon(cgIcon(ac.u,false));newUnread=Math.max(0,newUnread-1);updateBadge();}
+  var UL=['Не пріоритетно','Варто розглянути','Термінова подача','🔥 КРИТИЧНО'];
+  var UG=['linear-gradient(135deg,#003DA5,#0052CC)','linear-gradient(135deg,#CC7700,#F5A623)','linear-gradient(135deg,#C2410C,#EA580C)','linear-gradient(135deg,#14532D,#16A34A)'];
+  var d=ac.data;
+  var h='<div class="phdr" style="background:'+UG[ac.u]+'">'+
+    '<div><div class="pt">📦 Вантаж #VNT-'+('000'+d.id).slice(-3)+'</div><div class="ps">'+d.nearCity+' → '+d.dest+'</div></div>'+
+    '<div style="display:flex;gap:8px;align-items:center"><div class="pbadge">'+UL[ac.u]+'</div>'+
+    '<button class="pclose" onclick="closePanel()">✕</button></div></div>'+
+    '<div class="pbody">'+
+    '<div class="prow"><span class="plbl">Відправник</span><span class="pval">'+d.sender+'</span></div>'+
+    '<div class="prow"><span class="plbl">Тип / Вага</span><span class="pval">'+d.type+' · '+d.w+'т</span></div>'+
+    '<div class="prow"><span class="plbl">Напрямок</span><span class="pval">'+d.nearCity+' → '+d.dest+'</span></div>'+
+    '<div class="prow"><span class="plbl">Ціна</span><span class="pval" style="color:#003DA5;font-size:14px;font-weight:800">'+ac.price.toLocaleString()+' грн</span></div></div>'+
+    (ac.u>=2?'<div style="padding:9px 14px;background:#EFF6FF;border-top:3px solid #003DA5"><div style="padding:6px 10px;background:#DBEAFE;border-radius:7px;font-size:12px;font-weight:700;color:#003DA5;text-align:center">'+UL[ac.u]+' — '+ac.price.toLocaleString()+' грн</div></div>':'')+
+    '<div style="display:flex;border-top:1px solid #f3f4f6">'+
+    '<button onclick="takeCargo('+id+')" style="flex:1;padding:12px;background:#003DA5;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 0 16px">✓ Взяти вантаж</button>'+
+    '<button onclick="closePanel()" style="flex:1;padding:12px;background:#f3f4f6;color:#6b7280;border:none;font-size:13px;font-weight:700;cursor:pointer;border-radius:0 0 16px 0">Пропустити</button></div>';
+  showPanel(h);
+}
+
+function takeCargo(id){
+  var ac=activeCargo.find(function(a){return a.id===id;});
+  if(ac)addEvt('Вантаж #'+('000'+id).slice(-3)+' взято в роботу','ok');
+  despawn(id);closePanel();
+}
+
+var uberWrap=document.getElementById('uberwrap');
+var uberQ=[];var uberBusy=false;
+function spawnUber(cdata,u,price){uberQ.push({cdata:cdata,u:u,price:price});if(!uberBusy)nextUber();}
+function nextUber(){
+  if(!uberQ.length){uberBusy=false;return;}uberBusy=true;
+  var item=uberQ.shift();
+  var UL2=['','Варто розглянути','⚡ Термінова','🔥 КРИТИЧНО'];
+  var UC2=['','#F5A623','#E65100','#16A34A'];
+  var card=document.createElement('div');card.className='ucard';
+  var cid=item.cdata.id;
+  card.innerHTML='<div class="utimer"></div>'+
+    '<div class="uhdr"><div><div class="unew">НОВИЙ ВАНТАЖ SAT</div><div class="utit">'+item.cdata.type+' · '+item.cdata.w+'т</div><div class="usub">'+item.cdata.nearCity+' → '+item.cdata.dest+'</div></div>'+
+    '<div style="text-align:right"><div class="uprice">'+item.price.toLocaleString()+'</div><div class="ulbl">грн</div></div></div>'+
+    '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:'+UC2[item.u]+';flex-shrink:0"></div><span>'+UL2[item.u]+'</span></div>'+
+    '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">✓ Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
+  uberWrap.appendChild(card);
+  var timer=setTimeout(function(){dismiss(card);},12000);
+  card._tmr=timer;
+  document.getElementById('tk'+cid).onclick=function(){
+    addEvt('Вантаж з '+item.cdata.nearCity+' взято ('+item.price.toLocaleString()+' грн)','ok');
+    despawn(cid);dismiss(card);
+  };
+  document.getElementById('sk'+cid).onclick=function(){
+    addEvt('Вантаж з '+item.cdata.nearCity+' пропущено','cargo');dismiss(card);
+  };
+}
+function dismiss(card){
+  if(card._tmr)clearTimeout(card._tmr);
+  card.classList.add('out');
+  setTimeout(function(){card.remove();uberBusy=false;setTimeout(nextUber,350);},280);
+}
+
+var evtsEl=document.getElementById('evts');var evtsArr=[];
+var EI={cargo:'📦',truck:'🚛',warn:'⚠️',ok:'✅',red:'🚨'};
+function addEvt(txt,type){
+  evtsArr.unshift({txt:txt,type:type,t:ns()});
+  if(evtsArr.length>6)evtsArr.pop();
+  evtsEl.innerHTML=evtsArr.map(function(e){return '<div class="ev"><span class="evico">'+(EI[e.type]||'●')+'</span><div><div class="evtxt">'+e.txt+'</div><div class="evt">'+e.t+'</div></div></div>';}).join('');
+}
+function updateBadge(){
+  var b=document.getElementById('nbadge');
+  if(newUnread>0){b.style.display='inline-block';b.textContent='● '+newUnread+' нових';}
+  else{b.style.display='none';}
+}
+function updateStats(){
+  document.getElementById('cn-b').textContent=trucks.filter(function(t){return t.s==='b';}).length;
+  document.getElementById('cn-y').textContent=trucks.filter(function(t){return t.s==='y';}).length;
+  document.getElementById('cn-r').textContent=trucks.filter(function(t){return t.s==='r';}).length;
+  document.getElementById('cn-c').textContent=activeCargo.length;
+}
+setInterval(updateStats,2000);updateStats();
+
+for(var si=0;si<28;si++)spawnOne();
+setInterval(function(){if(Math.random()<0.55)spawnOne();else if(activeCargo.length>10){despawn(pk(activeCargo).id);}},9000);
+setInterval(function(){
+  activeCargo.forEach(function(ac){
+    ac.age++;
+    if(ac.age>ac.data.maxAge){despawn(ac.id);return;}
+    if(!ac.isNew&&Math.random()<0.07){var nu=Math.min(3,ac.u+1);if(nu!==ac.u){ac.u=nu;ac.marker.setIcon(cgIcon(nu,false));}}
+  });
+},4000);
+setInterval(function(){
+  var t=pk(trucks);
+  if(t.s==='r')addEvt(t.plate+' — '+t.msg,'red');
+  else if(t.s==='y')addEvt(t.plate+' вільна ('+t.load+'% зайнято)','warn');
+  else addEvt(t.plate+' → '+t.dest+' ETA '+t.eta,'truck');
+},15000);
+
+var stages=[{n:1,tag:'Фундамент · Етап 1',title:'Інформаційна основа',col:'#0EA5E9',prob:'Вся інформація живе в голові одного логіста. Кожні 30-60 хвилин він заново реконструює повну картину.',items:['Telegram-бот — єдина точка збору від водіїв, складу, регіонів','Автоматична структуризація подій','Живий стан — де кожна машина, що з напрямком','Дашборд оновлюється без участі логіста'],result:'📊 Актуальна картина без реконструкції щогодини',metric:'~80% проблем · Реалізація 6-8 тижнів'},{n:2,tag:'Проактивність · Етап 2',title:'AI-агенти — живе спостереження',col:'#A855F7',prob:'Логіст сам сканує всі 18-20 напрямків. При 50 машинах це фізично неможливо — щось завжди пропускається.',items:['Окремий агент за кожною машиною паралельно — 24/7','Машина стоїть 40 хв → автоматичний сигнал','Вантаж по дорозі → пропозиція з розрахунком вигоди'],result:'🎯 Система знаходить — логіст лише підтверджує'},{n:3,tag:'Інтелект · Етап 3',title:'Прогнозування та досвід',col:'#F59E0B',prob:'Роками накопичений досвід живе тільки в голові логіста. Захворів — досвід зник.',items:['Система навчається на кожному рейсі та рішенні','Прогноз P10/P50/P90 по кожному напрямку','«У 70% випадків звідси вдається завантажитись у зворотньому»'],result:'🧠 Передбачає до того як стало проблемою'}];
+var acEl=document.getElementById('acards');
+acEl.innerHTML=stages.map(function(s){return '<div class="ac" style="border:1px solid '+s.col+'33">'+
+  '<div class="ach" style="background:'+s.col+'11"><div class="acn" style="background:'+s.col+'22;color:'+s.col+'">'+s.n+'</div>'+
+  '<div><div class="actag" style="color:'+s.col+'">'+s.tag+'</div><div class="actit">'+s.title+'</div></div></div>'+
+  '<div class="acb"><div class="acpr">'+s.prob+'</div><div class="acll">Що змінюємо</div>'+
+  s.items.map(function(it){return '<div class="aci"><div class="acd"></div><span>'+it+'</span></div>';}).join('')+
+  '<div class="acres">'+s.result+'</div>'+(s.metric?'<div class="acmet">'+s.metric+'</div>':'')+
+  '</div></div>';}).join('');
+
+addEvt('SAT система запущена','ok');
+setTimeout(function(){addEvt('50 машин на маршрутах','truck');},1500);
+</script>
+</body></html>
