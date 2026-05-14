@@ -155,6 +155,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .acmet{margin-top:7px;text-align:center;font-size:10px;font-weight:700;padding:6px;border-radius:6px;background:rgba(0,61,165,0.2);color:#7EC8FF}
 .aftr{text-align:center;padding:20px 16px 40px;margin-top:10px;border-top:1px solid rgba(245,166,35,0.2);color:rgba(255,255,255,0.4);font-size:12px;line-height:1.55}
 .aftr strong{color:#F5A623}
+#dcard{position:fixed;top:80px;right:20px;width:270px;background:#003DA5;color:#fff;border:1px solid #F5A623;border-radius:11px;box-shadow:0 12px 38px rgba(0,0,0,0.55);z-index:550;display:none;font-family:-apple-system,sans-serif;font-size:11px}
+.dch{padding:7px 11px;cursor:move;display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(0,0,0,0.22);border-radius:10px 10px 0 0;user-select:none;border-bottom:1px solid rgba(245,166,35,0.4)}
+.dch-t{font-size:10px;font-weight:700;color:#FFD700;letter-spacing:0.5px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dch-x{background:rgba(255,255,255,0.18);border:none;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;line-height:22px;text-align:center;padding:0;flex-shrink:0}
+.dch-x:hover{background:rgba(255,255,255,0.34)}
+.dcb{padding:9px 12px 11px}
+.dch-grip{display:inline-block;color:rgba(255,255,255,0.5);margin-right:4px;font-size:13px}
 </style></head>
 <body>
 <div id="hdr">
@@ -178,6 +185,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 </div>
 <div id="map"></div>
 <div id="routingBadge">🛣️ Будуємо маршрут по дорогах…</div>
+<div id="dcard"></div>
 <div id="panel"></div>
 <div id="uberwrap"></div>
 <div id="evts"></div>
@@ -194,8 +202,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
   <div class="lsep"></div>
   <div class="lh">Як це працює</div>
   <div class="lr">🖱️ <b style="color:#fff">Клік на машину</b> — маршрут</div>
-  <div class="lr">🖱️ <b style="color:#fff">Клік на вантаж</b> — вільні авто поруч</div>
-  <div class="lr">📋 <b style="color:#FFD700">«Деталі» у плашці</b> — повна картка</div>
+  <div class="lr">🖱️ <b style="color:#fff">Клік на вантаж</b> — тільки сумісні авто</div>
+  <div class="lr">📋 <b style="color:#FFD700">«Подробиці»</b> — повна картка</div>
+  <div class="lr">✋ <b style="color:#FFD700">Тягни заголовок</b> картки</div>
 </div>
 <div id="archpage">
   <nav class="anav">
@@ -362,7 +371,13 @@ trucks.forEach(function(t){
   var m=L.marker(pos,{icon:mkIcon(t.s),zIndexOffset:100}).addTo(map);
   m.bindPopup(function(){return truckPopupHtml(t);},{closeButton:false,autoPan:false,offset:[0,4],className:'mini-popup'});
   m.on('mouseover',function(){m.openPopup();});
-  m.on('click',function(e){if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);showTruckRoute(t,m);});
+  m.on('click',function(e){
+    if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
+    map.closePopup();
+    restoreAllTrucks();
+    showTruckRoute(t,m);
+    showDCard('Машина '+t.plate,truckDCardHtml(t));
+  });
   tMarkers[t.id]=m;
 });
 
@@ -376,6 +391,7 @@ setInterval(function(){
 },2000);
 
 var routeLayer=null;var nearbyCargosLayer=null;var nearbyTrucksLayer=null;var currentRouteTruckId=null;
+var hiddenTruckIds=[];
 function clearRoute(){
   if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
   if(nearbyCargosLayer){map.removeLayer(nearbyCargosLayer);nearbyCargosLayer=null;}
@@ -384,6 +400,77 @@ function clearRoute(){
 }
 function clearTruckHighlight(){
   if(nearbyTrucksLayer){map.removeLayer(nearbyTrucksLayer);nearbyTrucksLayer=null;}
+}
+function restoreAllTrucks(){
+  hiddenTruckIds.forEach(function(id){if(tMarkers[id]&&!map.hasLayer(tMarkers[id]))tMarkers[id].addTo(map);});
+  hiddenTruckIds=[];
+}
+function hideNonCompatibleTrucks(cargoPos){
+  restoreAllTrucks();
+  trucks.forEach(function(t){
+    if(!tMarkers[t.id])return;
+    var keep=false;
+    if(t.s==='y'){
+      var ll=tMarkers[t.id].getLatLng();
+      if(haversineKm(cargoPos[0],cargoPos[1],ll.lat,ll.lng)<80)keep=true;
+    }
+    if(!keep){map.removeLayer(tMarkers[t.id]);hiddenTruckIds.push(t.id);}
+  });
+}
+
+var dcardEl=document.getElementById('dcard');
+var dragSt={on:false,ox:0,oy:0};
+dcardEl.addEventListener('mousedown',function(e){
+  if(e.target.closest('.dch-x'))return;
+  var hdr=e.target.closest('.dch');
+  if(!hdr)return;
+  var r=dcardEl.getBoundingClientRect();
+  dragSt.on=true;
+  dragSt.ox=e.clientX-r.left;
+  dragSt.oy=e.clientY-r.top;
+  dcardEl.style.right='auto';
+  dcardEl.style.left=r.left+'px';
+  dcardEl.style.top=r.top+'px';
+  e.preventDefault();
+});
+document.addEventListener('mousemove',function(e){
+  if(!dragSt.on)return;
+  var x=Math.max(0,Math.min(window.innerWidth-80,e.clientX-dragSt.ox));
+  var y=Math.max(58,Math.min(window.innerHeight-40,e.clientY-dragSt.oy));
+  dcardEl.style.left=x+'px';
+  dcardEl.style.top=y+'px';
+});
+document.addEventListener('mouseup',function(){dragSt.on=false;});
+
+function showDCard(headerTxt,bodyHtml){
+  dcardEl.innerHTML='<div class="dch"><span class="dch-t"><span class="dch-grip">⋮⋮</span>'+headerTxt+'</span><button class="dch-x" onclick="hideDCard()">✕</button></div><div class="dcb">'+bodyHtml+'</div>';
+  dcardEl.style.right='20px';
+  dcardEl.style.left='auto';
+  dcardEl.style.top='80px';
+  dcardEl.style.display='block';
+}
+window.hideDCard=function(){dcardEl.style.display='none';dcardEl.innerHTML='';};
+
+function truckDCardHtml(t){
+  var stCol={b:'#7EC8FF',y:'#FFD700',r:'#FF6B6B'}[t.s];
+  return '<div class="mp-title">🚛 '+t.plate+'<span class="mp-st" style="background:'+TCOL[t.s]+'">'+TST[t.s]+'</span></div>'+
+    '<div class="mp-row">'+t.driver+'</div>'+
+    '<div class="mp-row">→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+'</div>'+
+    '<div class="mp-row">Завант. '+t.load+'% · '+t.cargo+'</div>'+
+    '<div class="mp-mut">Формат: '+t.format+'</div>'+
+    '<button class="mp-btn" onclick="openTruckPanel(\''+t.id+'\')">📋 Подробиці</button>';
+}
+function cargoDCardHtml(ac,matched){
+  var d=ac.data;
+  var ULsh=['Не пріоритетно','Розглянути','🔥 КРИТИЧНО'][ac.u];
+  var UCsh=['rgba(255,193,7,0.7)','#FF8F00','#39FF14'][ac.u];
+  var match=matched>0?'<div class="mp-row" style="color:#FFD700;font-weight:700">'+matched+' сумісних авто поруч</div>':'<div class="mp-row" style="color:#FF6B6B">Вільних авто поруч немає</div>';
+  return '<div class="mp-title">📦 '+d.type+' '+d.w+'т<span class="mp-st" style="background:'+UCsh+';color:#003DA5">'+ULsh+'</span></div>'+
+    '<div class="mp-mut">'+d.sender+'</div>'+
+    '<div class="mp-row">→ '+d.nearCity+' → '+d.dest+'</div>'+
+    '<div class="mp-row"><span class="mp-pr">'+ac.price.toLocaleString()+' грн</span> · маржа '+d.margin+'%</div>'+
+    match+
+    '<button class="mp-btn" onclick="openCargoPanel('+d.id+')">📋 Подробиці</button>';
 }
 
 function drawCity(latlng,name,col,isHQ){
@@ -496,7 +583,7 @@ async function showTruckRoute(t,m){
   return res;
 }
 
-map.on('click',function(){clearRoute();clearTruckHighlight();closePanel();});
+map.on('click',function(){clearRoute();clearTruckHighlight();restoreAllTrucks();hideDCard();closePanel();});
 
 var panel=document.getElementById('panel');
 function showPanel(html){panel.innerHTML=html;panel.classList.add('open');}
@@ -570,7 +657,15 @@ function spawnOne(silent){
   var m=L.marker(cd.pos,{icon:cgIcon(u,!silent),zIndexOffset:50});
   m.bindPopup(function(){return cargoPopupHtml(cd.id);},{closeButton:false,autoPan:false,offset:[0,-2],className:'mini-popup'});
   m.on('mouseover',function(){m.openPopup();});
-  m.on('click',function(e){if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);highlightYellowTrucksNear(cd);});
+  m.on('click',function(e){
+    if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
+    map.closePopup();
+    clearRoute();
+    hideNonCompatibleTrucks(cd.pos);
+    var found=highlightYellowTrucksNear(cd);
+    var ac=activeCargoById[cd.id];
+    if(ac)showDCard('Вантаж · '+cd.nearCity,cargoDCardHtml(ac,found||0));
+  });
   m.addTo(map);
   var ac={id:cd.id,data:cd,marker:m,u:u,isNew:!silent,age:0,price:price,nearDist:null};
   activeCargo.push(ac);activeCargoById[cd.id]=ac;
