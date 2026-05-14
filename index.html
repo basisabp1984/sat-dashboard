@@ -304,41 +304,69 @@ var trucksById={};trucks.forEach(function(t){trucksById[t.id]=t;});
 
 function truckSVG(s){
   var col=TCOL[s];
-  var dark=s==='b'?'#002270':s==='y'?'#CC7700':'#CC0000';
-  var wc=s==='b'?'rgba(180,215,255,0.9)':s==='y'?'rgba(255,255,200,0.9)':'rgba(255,200,200,0.9)';
+  var dark=s==='b'?'#001a4f':s==='y'?'#A35700':'#8C0000';
+  var light=s==='b'?'#1F66D9':s==='y'?'#FFC75F':'#F87171';
   var anim=s==='y'?'animation:yw 2s infinite':s==='r'?'animation:rw 0.9s infinite':'';
+  var gid='tg-'+s;
   return '<div style="'+anim+';display:inline-block">'+
-    '<svg viewBox="0 0 54 34" width="54" height="34" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 5px rgba(0,0,0,0.45))">'+
-    '<rect x="1" y="3" width="32" height="21" rx="2" fill="'+col+'"/>'+
-    '<rect x="33" y="8" width="19" height="16" rx="2.5" fill="'+dark+'"/>'+
-    '<rect x="35" y="10" width="13" height="9" rx="1.5" fill="'+wc+'"/>'+
-    '<text x="17" y="17" font-size="7" fill="white" text-anchor="middle" font-weight="900" font-family="Arial,sans-serif" letter-spacing="0.5">SAT</text>'+
-    '<rect x="5" y="24" width="44" height="4" rx="1" fill="'+dark+'"/>'+
-    '<circle cx="13" cy="30" r="4" fill="#1a1a2e"/><circle cx="13" cy="30" r="1.8" fill="#777"/>'+
-    '<circle cx="38" cy="30" r="4" fill="#1a1a2e"/><circle cx="38" cy="30" r="1.8" fill="#777"/>'+
-    '<circle cx="47" cy="30" r="4" fill="#1a1a2e"/><circle cx="47" cy="30" r="1.8" fill="#777"/>'+
+    '<svg viewBox="0 0 60 36" width="56" height="34" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 3px 6px rgba(0,0,0,0.55))">'+
+    '<defs>'+
+      '<linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="'+light+'"/>'+
+        '<stop offset="1" stop-color="'+col+'"/>'+
+      '</linearGradient>'+
+      '<linearGradient id="'+gid+'-c" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="'+col+'"/>'+
+        '<stop offset="1" stop-color="'+dark+'"/>'+
+      '</linearGradient>'+
+    '</defs>'+
+    '<rect x="1.5" y="4" width="34" height="22" rx="3" fill="url(#'+gid+')" stroke="'+dark+'" stroke-width="0.7"/>'+
+    '<rect x="1.5" y="13.5" width="34" height="2" fill="rgba(255,255,255,0.22)"/>'+
+    '<text x="18.5" y="18" font-size="8" fill="#fff" text-anchor="middle" font-weight="900" font-family="Arial,sans-serif" letter-spacing="0.5" style="paint-order:stroke;stroke:rgba(0,0,0,0.25);stroke-width:0.5">SAT</text>'+
+    '<rect x="35.5" y="9" width="22" height="17" rx="3" fill="url(#'+gid+'-c)" stroke="'+dark+'" stroke-width="0.6"/>'+
+    '<rect x="37.5" y="11" width="16" height="8" rx="2" fill="#0B1B3A"/>'+
+    '<rect x="46" y="11.5" width="7" height="7" rx="1.5" fill="rgba(180,215,255,0.45)"/>'+
+    '<circle cx="56" cy="13.5" r="1.2" fill="#FFD66B"/>'+
+    '<rect x="3" y="26" width="52" height="2.5" rx="1" fill="'+dark+'"/>'+
+    '<circle cx="13" cy="30" r="4.2" fill="#0A0A0F"/><circle cx="13" cy="30" r="2.2" fill="#4A4A55"/><circle cx="13" cy="30" r="0.9" fill="#9BA3B0"/>'+
+    '<circle cx="40" cy="30" r="4.2" fill="#0A0A0F"/><circle cx="40" cy="30" r="2.2" fill="#4A4A55"/><circle cx="40" cy="30" r="0.9" fill="#9BA3B0"/>'+
+    '<circle cx="50" cy="30" r="4.2" fill="#0A0A0F"/><circle cx="50" cy="30" r="2.2" fill="#4A4A55"/><circle cx="50" cy="30" r="0.9" fill="#9BA3B0"/>'+
+    '<circle cx="3.5" cy="5.5" r="2.2" fill="#fff" opacity="0.95"/>'+
+    '<circle cx="3.5" cy="5.5" r="1.3" fill="'+col+'"/>'+
     '</svg></div>';
 }
 
 function boxSVG(sz,u,isNew){
-  var fills=['rgba(255,220,100,0.35)','#FFC107','rgba(57,255,20,0.3)'];
-  var tops=['rgba(255,180,0,0.5)','#FF8F00','#39FF14'];
-  var lines=['rgba(180,120,0,0.4)','#cc7000','#00cc00'];
-  var glow=u===2?'filter:drop-shadow(0 0 6px #39FF14)':'';
+  var palette=[
+    {top:'#FFE08A',mid:'#FFC845',side:'#D69500',edge:'#A36F00',tape:'#8C5A00'},
+    {top:'#FFB74D',mid:'#FF8F00',side:'#C46A00',edge:'#7A4200',tape:'#5C3200'},
+    {top:'#7CFF8A',mid:'#39FF14',side:'#1FBF00',edge:'#0A7000',tape:'#0A4C00'}
+  ];
+  var p=palette[u];
+  var glow=u===2?'filter:drop-shadow(0 0 7px rgba(57,255,20,0.85))':'filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35))';
   var a=isNew?'animation:ping 0.7s infinite':'';
-  var f=isNew?'rgba(255,255,255,0.3)':fills[u];
-  var t=isNew?'rgba(255,255,255,0.7)':tops[u];
-  var l=isNew?'rgba(255,255,255,0.5)':lines[u];
+  var top=isNew?'rgba(255,255,255,0.85)':p.top;
+  var mid=isNew?'rgba(255,255,255,0.55)':p.mid;
+  var side=isNew?'rgba(255,255,255,0.3)':p.side;
+  var edge=isNew?'rgba(255,255,255,0.7)':p.edge;
+  var tape=isNew?'rgba(255,255,255,0.5)':p.tape;
+  var gid='cg-'+u+(isNew?'-n':'');
   return '<div style="display:inline-block;'+a+';'+glow+'">'+
-    '<svg viewBox="0 0 14 14" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg">'+
-    '<rect x="0.5" y="4" width="13" height="10" rx="1" fill="'+f+'" stroke="'+t+'" stroke-width="1"/>'+
-    '<rect x="0" y="1.5" width="14" height="3.5" rx="1" fill="'+t+'"/>'+
-    '<line x1="7" y1="1.5" x2="7" y2="14" stroke="'+l+'" stroke-width="1.2"/>'+
-    '<line x1="0" y1="7.5" x2="14" y2="7.5" stroke="'+l+'" stroke-width="1.2"/>'+
+    '<svg viewBox="0 0 16 16" width="'+sz+'" height="'+sz+'" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0" stop-color="'+top+'"/>'+
+      '<stop offset="1" stop-color="'+mid+'"/>'+
+    '</linearGradient></defs>'+
+    '<polygon points="1,5 8,2.5 15,5 8,7.5" fill="'+top+'" stroke="'+edge+'" stroke-width="0.5" stroke-linejoin="round"/>'+
+    '<polygon points="1,5 8,7.5 8,15 1,12.5" fill="url(#'+gid+')" stroke="'+edge+'" stroke-width="0.5" stroke-linejoin="round"/>'+
+    '<polygon points="15,5 8,7.5 8,15 15,12.5" fill="'+side+'" stroke="'+edge+'" stroke-width="0.5" stroke-linejoin="round"/>'+
+    '<line x1="3.5" y1="4.1" x2="3.5" y2="13.7" stroke="'+tape+'" stroke-width="0.8" opacity="0.75"/>'+
+    '<line x1="12.5" y1="4.1" x2="12.5" y2="13.7" stroke="'+tape+'" stroke-width="0.8" opacity="0.75"/>'+
+    '<line x1="8" y1="7.5" x2="8" y2="15" stroke="'+edge+'" stroke-width="0.6"/>'+
     '</svg></div>';
 }
 
-function mkIcon(s){return L.divIcon({html:truckSVG(s),className:'',iconSize:[54,34],iconAnchor:[27,34],popupAnchor:[0,-32]});}
+function mkIcon(s){return L.divIcon({html:truckSVG(s),className:'',iconSize:[56,34],iconAnchor:[28,34],popupAnchor:[0,-32]});}
 function cgIcon(u,isNew){var sz=isNew?18:[12,16,19][u];return L.divIcon({html:boxSVG(sz,u,isNew),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2-2]});}
 
 function truckPopupHtml(t){
@@ -348,8 +376,7 @@ function truckPopupHtml(t){
     '<div class="mp-row">→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+'</div>'+
     '<div class="mp-row">Завант. '+t.load+'% · '+t.cargo+'</div>'+
     '<div class="mp-mut">Формат: '+t.format+'</div>'+
-    '<button class="mp-btn" onclick="event.stopPropagation();openTruckPanel(\''+t.id+'\')">📋 Деталі</button>'+
-    '<div class="mp-hint">Клік по машині — маршрут</div>';
+    '<div class="mp-hint">Клік — маршрут і картка</div>';
 }
 
 function cargoPopupHtml(cid){
@@ -361,8 +388,7 @@ function cargoPopupHtml(cid){
     '<div class="mp-mut">'+d.sender+'</div>'+
     '<div class="mp-row">→ '+d.nearCity+' → '+d.dest+'</div>'+
     '<div class="mp-row"><span class="mp-pr">'+price.toLocaleString()+' грн</span> · маржа '+d.margin+'%</div>'+
-    '<button class="mp-btn" onclick="event.stopPropagation();openCargoPanel('+d.id+')">📋 Деталі</button>'+
-    '<div class="mp-hint">Клік по вантажу — вільні авто поруч</div>';
+    '<div class="mp-hint">Клік — підбір авто і картка</div>';
 }
 
 var tMarkers={};
@@ -671,7 +697,8 @@ function spawnOne(silent){
   activeCargo.push(ac);activeCargoById[cd.id]=ac;
   if(!silent){
     newUnread++;updateBadge();addEvt('Новий вантаж — '+cd.nearCity+': '+cd.w+'т '+cd.type,'cargo');
-    if(u===2&&Math.random()<0.35)spawnUber(cd,u,price);
+    var uberProb=u===2?0.85:u===1?0.55:0.35;
+    if(Math.random()<uberProb)spawnUber(cd,u,price);
     setTimeout(function(){var ac2=activeCargoById[cd.id];if(ac2&&ac2.isNew){ac2.isNew=false;ac2.marker.setIcon(cgIcon(ac2.u,false));}},10000);
   }
 }
@@ -800,7 +827,11 @@ function updateStats(){
 setInterval(updateStats,2000);updateStats();
 
 for(var si=0;si<100;si++)spawnOne(true);
-setInterval(function(){if(Math.random()<0.45)spawnOne();else if(activeCargo.length>40){despawn(pk(activeCargo).id);}},25000);
+setInterval(function(){
+  if(activeCargo.length>=100){var rm=activeCargo.filter(function(a){return !a.isNew;});if(rm.length)despawn(pk(rm).id);}
+  spawnOne();
+},10000);
+setInterval(function(){if(activeCargo.length>85){var rm=activeCargo.filter(function(a){return !a.isNew;});if(rm.length)despawn(pk(rm).id);}},7000);
 setInterval(function(){
   activeCargo.forEach(function(ac){
     ac.age++;
