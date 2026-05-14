@@ -83,10 +83,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
 .ulbl{font-size:9px;color:#9ca3af;text-align:right}
 .uurg{padding:0 12px 8px;display:flex;align-items:center;gap:7px;font-size:11px;color:#374151}
 .ubtns{display:flex;border-top:1px solid #f3f4f6}
-.ubtn{flex:1;padding:11px;border:none;font-size:13px;font-weight:700;cursor:pointer}
+.ubtn{flex:1;padding:10px 4px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .ubtn.take{background:#003DA5;color:#fff;border-radius:0 0 0 14px}
 .ubtn.take:hover{background:#002880}
+.ubtn.show{background:#F5A623;color:#003DA5;border-left:1px solid rgba(0,0,0,0.06);border-right:1px solid rgba(0,0,0,0.06)}
+.ubtn.show:hover{background:#FFD700}
 .ubtn.skip{background:#f3f4f6;color:#6b7280;border-radius:0 0 14px 0}
+.ubtn.skip:hover{background:#e5e7eb}
 #evts{position:fixed;bottom:20px;left:10px;z-index:400;width:min(190px,43vw);background:rgba(0,45,120,0.93);border:1px solid rgba(245,166,35,0.3);border-radius:10px;overflow:hidden}
 .ev{display:flex;align-items:flex-start;gap:5px;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.06);animation:fein 0.3s ease}
 .ev:last-child{border:none}
@@ -203,10 +206,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,sans-serif}
   <div class="lr"><svg width="18" height="18" viewBox="0 0 12 12" style="filter:drop-shadow(0 0 4px #39FF14)"><rect x="0" y="3" width="12" height="9" rx="1" fill="rgba(57,255,20,0.3)"/><rect x="0" y="0" width="12" height="4" rx="1" fill="#39FF14"/></svg>🔥 КРИТИЧНО</div>
   <div class="lsep"></div>
   <div class="lh">Як це працює</div>
-  <div class="lr">🖱️ <b style="color:#fff">Клік на машину</b> — маршрут</div>
-  <div class="lr">🖱️ <b style="color:#fff">Клік на вантаж</b> — тільки сумісні авто</div>
-  <div class="lr">📋 <b style="color:#FFD700">«Подробиці»</b> — повна картка</div>
-  <div class="lr">✋ <b style="color:#FFD700">Тягни заголовок</b> картки</div>
+  <div class="lr">🖱️ <b style="color:#fff">Клік</b> — маршрут / сумісні авто</div>
+  <div class="lr">👆 <b style="color:#fff">Наведи</b> — підказка з «Подробиці»</div>
+  <div class="lr">✋ <b style="color:#FFD700">Тягни</b> картку за заголовок</div>
 </div>
 <div id="archpage">
   <nav class="anav">
@@ -380,7 +382,7 @@ function truckPopupHtml(t){
     '<div class="mp-row">→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+'</div>'+
     '<div class="mp-row">Завант. '+t.load+'% · '+t.cargo+'</div>'+
     '<div class="mp-mut">Формат: '+t.format+'</div>'+
-    '<div class="mp-hint">Клік — маршрут і картка</div>';
+    '<button class="mp-btn" onclick="event.stopPropagation();openTruckPanel(\''+t.id+'\')">📋 Подробиці</button>';
 }
 
 function cargoPopupHtml(cid){
@@ -392,7 +394,7 @@ function cargoPopupHtml(cid){
     '<div class="mp-mut">'+d.sender+'</div>'+
     '<div class="mp-row">→ '+d.nearCity+' → '+d.dest+'</div>'+
     '<div class="mp-row"><span class="mp-pr">'+price.toLocaleString()+' грн</span> · маржа '+d.margin+'%</div>'+
-    '<div class="mp-hint">Клік — підбір авто і картка</div>';
+    '<button class="mp-btn" onclick="event.stopPropagation();openCargoPanel('+d.id+')">📋 Подробиці</button>';
 }
 
 var tMarkers={};
@@ -487,7 +489,7 @@ function truckDCardHtml(t){
     '<div class="mp-row">→ <span style="color:'+stCol+'">'+t.dest+'</span> · ETA '+t.eta+'</div>'+
     '<div class="mp-row">Завант. '+t.load+'% · '+t.cargo+'</div>'+
     '<div class="mp-mut">Формат: '+t.format+'</div>'+
-    '<button class="mp-btn" onclick="openTruckPanel(\''+t.id+'\')">📋 Подробиці</button>';
+    '<div class="mp-hint">Наведи на машину → «Подробиці»</div>';
 }
 function cargoDCardHtml(ac,matched){
   var d=ac.data;
@@ -499,7 +501,7 @@ function cargoDCardHtml(ac,matched){
     '<div class="mp-row">→ '+d.nearCity+' → '+d.dest+'</div>'+
     '<div class="mp-row"><span class="mp-pr">'+ac.price.toLocaleString()+' грн</span> · маржа '+d.margin+'%</div>'+
     match+
-    '<button class="mp-btn" onclick="openCargoPanel('+d.id+')">📋 Подробиці</button>';
+    '<div class="mp-hint">Наведи на вантаж → «Подробиці»</div>';
 }
 
 function drawCity(latlng,name,col,isHQ){
@@ -794,13 +796,29 @@ function nextUber(){
     '<div class="uhdr"><div><div class="unew">НОВИЙ ВАНТАЖ SAT</div><div class="utit">'+item.cdata.type+' · '+item.cdata.w+'т</div><div class="usub">'+item.cdata.nearCity+' → '+item.cdata.dest+'</div></div>'+
     '<div style="text-align:right"><div class="uprice">'+item.price.toLocaleString()+'</div><div class="ulbl">грн</div></div></div>'+
     '<div class="uurg"><div style="width:9px;height:9px;border-radius:50%;background:#16A34A;flex-shrink:0"></div><span>🔥 КРИТИЧНО · маржа '+item.cdata.margin+'%</span></div>'+
-    '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">✓ Взяти</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
+    '<div class="ubtns"><button class="ubtn take" id="tk'+cid+'">✓ Взяти</button><button class="ubtn show" id="sh'+cid+'">🗺️ На карті</button><button class="ubtn skip" id="sk'+cid+'">Пропустити</button></div>';
   uberWrap.appendChild(card);
-  var timer=setTimeout(function(){dismiss(card);},9000);
+  var timer=setTimeout(function(){dismiss(card);},12000);
   card._tmr=timer;
   document.getElementById('tk'+cid).onclick=function(){
     addEvt('Вантаж з '+item.cdata.nearCity+' взято ('+item.price.toLocaleString()+' грн)','ok');
     despawn(cid);dismiss(card);
+  };
+  document.getElementById('sh'+cid).onclick=function(){
+    var ac=activeCargoById[cid];
+    if(!ac){addEvt('Вантаж вже знято','warn');return;}
+    if(card._tmr){clearTimeout(card._tmr);card._tmr=setTimeout(function(){dismiss(card);},20000);}
+    map.closePopup();clearRoute();
+    map.flyTo(item.cdata.pos,9,{duration:0.9});
+    setTimeout(function(){
+      var ac2=activeCargoById[cid];if(!ac2)return;
+      hideNonCompatibleTrucks(item.cdata.pos);
+      var found=highlightYellowTrucksNear(item.cdata);
+      showDCard('Вантаж · '+item.cdata.nearCity,cargoDCardHtml(ac2,found||0));
+      ac2.marker.setIcon(cgIcon(ac2.u,true));
+      setTimeout(function(){var ac3=activeCargoById[cid];if(ac3)ac3.marker.setIcon(cgIcon(ac3.u,false));},3500);
+    },950);
+    addEvt('Перехід до вантажу '+item.cdata.nearCity,'cargo');
   };
   document.getElementById('sk'+cid).onclick=function(){
     addEvt('Вантаж з '+item.cdata.nearCity+' пропущено','cargo');dismiss(card);
